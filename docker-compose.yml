@@ -1,0 +1,36 @@
+version: '3.1'
+services:
+  myapp-mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-v:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - mysql-network
+
+  myapp-main:
+    build: .
+    ports:
+      - 8080:8080
+    restart: on-failure
+    depends_on:
+      - myapp-mysql
+    environment:
+      - DATABASE_HOST=myapp-mysql
+      - DATABASE_USER=springuser
+      - DATABASE_PASSWORD=MySQL-P
+      - DATABASE_NAME=db_example
+      - DATABASE_PORT=3306
+    networks:
+      - mysql-network
+
+networks:
+  mysql-network:
+
+volumes:
+  mysql-v:
+    external: true
