@@ -7,20 +7,13 @@ Step 1 - Create the MySQL database container
 docker run -p 3306:3306 --name mysql-server -v mysql-v:/var/lib/mysql -v ${PWD}/mysql:/docker-entrypoint-initdb.d -e MYSQL_ROOT_PASSWORD=root -d mysql
 ```
 
-Step 2 - Use the maven image to run a "clean install" on all the project
-
-```bash
-# For Linux use $PWD instead of ${PWD}
-docker run -it --name maven-install --link mysql-server -e DATABASE_HOST=mysql-server -v ${PWD}:/usr/src/mymaven -w /usr/src/mymaven maven mvn clean install
-```
-
-Step 3 - Build the image to run the web page server
+Step 2 - Build the image to run the web page server
 
 ```bash
 docker build -t spring-app-img .
 ```
 
-Step 4 - Run the previous image
+Step 3 - Run the previous image
 
 ```bash
 docker run --rm -it -p 8080:8080 --link mysql-server -e DATABASE_HOST=mysql-server spring-app-img

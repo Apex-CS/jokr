@@ -34,18 +34,8 @@ public class MainController {
     return userRepository.findAll();
   }
 
-  @RequestMapping("/welcome")
-	public String welcome() {
-		return "Hello Docker World!";
-	}
-	
-	@RequestMapping("/goodbye")
-	public String goodbye() {
-		return "Bye Docker World!";
-	}
-	
-	@RequestMapping("/")
-	public String index() {
-		return "New Index";
-	}
+  @GetMapping(path="/test")
+  public @ResponseBody String test() {
+    return "This is a test";
+  }
 }
