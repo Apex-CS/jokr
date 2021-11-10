@@ -15,4 +15,3 @@ You must provide evidence in the form of unit tests, screenshots, logs, API
 Provide experiments, feature flags or other mechanisms which used to reduce the risk of changes introduced in this PR.
 
 ping @fullstack-bootcamp-2021
-
