@@ -1,6 +1,6 @@
-version: '3.1'
+version: '3.8'
 services:
-  myapp-mysql:
+  ecomm-mysql:
     image: mysql
     ports:
       - 3306:3306
@@ -9,27 +9,33 @@ services:
       - ./mysql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=root
+    security_opt:
+    - seccomp:unconfined
     networks:
-      - mysql-network
+      - ecomm-network
 
-  myapp-main:
-    build: .
+  ecomm-main:
+    image: openjdk:11
+    depends_on:
+      - ecomm-mysql
+    working_dir: /work
+    volumes:
+      - ./:/work
+    entrypoint: ["/bin/bash", "-c" , "./mvnw dependency:go-offline && ./mvnw install && java -jar target/app.jar"]
     ports:
       - 8080:8080
-    restart: on-failure
-    depends_on:
-      - myapp-mysql
+    # restart: on-failure
     environment:
-      - DATABASE_HOST=myapp-mysql
+      - DATABASE_HOST=ecomm-mysql
       - DATABASE_USER=springuser
       - DATABASE_PASSWORD=MySQL-P
       - DATABASE_NAME=db_example
       - DATABASE_PORT=3306
     networks:
-      - mysql-network
+      - ecomm-network
 
 networks:
-  mysql-network:
+  ecomm-network:
 
 volumes:
   mysql-v:
