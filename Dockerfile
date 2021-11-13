@@ -9,6 +9,5 @@ RUN ./mvnw dependency:go-offline
 
 COPY . /work/
 RUN ./mvnw install -DskipTests
-RUN cp /work/target/*.jar /work/target/app.jar
 
 ENTRYPOINT ["java","-jar","/work/target/app.jar"]
