@@ -4,24 +4,8 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11
-        environment:
-          DATABASE_NAME: ci_db
-          DATABASE_USER: root
-          DATABASE_PASSWORD: ''
-          DB_DRIVER: com.mysql.cj.jdbc.Driver
-      - image: circleci/mysql:8.0-ram
-        command: [--default-authentication-plugin=mysql_native_password]
-        environment:
-        MYSQL_ALLOW_EMPTY_PASSWORD: yes
-        MYSQL_ROOT_PASSWORD: ''
     steps:
       - checkout
-      - run:
-          name: Wait for Database Connection
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      - run: sudo apt-get update
-      - run: sudo apt-get install default-mysql-client
-      - run: mysql -h 127.0.0.1 -u root -e "CREATE DATABASE ci_db"
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
@@ -44,8 +28,19 @@ jobs:
           DATABASE_USER: root
           DATABASE_PASSWORD: ''
           DB_DRIVER: com.mysql.cj.jdbc.Driver
+      - image: circleci/mysql:8.0-ram
+        command: [--default-authentication-plugin=mysql_native_password]
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
     steps:
       - checkout
+      - run:
+          name: Wait for Database Connection
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run: sudo apt-get update
+      - run: sudo apt-get install default-mysql-client
+      - run: mysql -h 127.0.0.1 -u root -e "CREATE DATABASE ci_db"
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
