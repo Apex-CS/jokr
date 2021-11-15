@@ -7,11 +7,12 @@ jobs:
         environment:
           DATABASE_NAME: ci_db
           DATABASE_USER: root
-          DATABASE_PASSWORD: root
+          DATABASE_PASSWORD: ''
           DB_DRIVER: com.mysql.cj.jdbc.Driver
       - image: circleci/mysql:8.0-ram
         environment:
-          MYSQL_ROOT_PASSWORD: root
+        MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        MYSQL_ROOT_PASSWORD: ''
     steps:
       - checkout
       - run:
