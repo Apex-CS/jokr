@@ -4,6 +4,53 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11
+        environment:
+          DATABASE_NAME: ci_db
+          DATABASE_USER: root
+          DATABASE_PASSWORD: root
+          DB_DRIVER: com.mysql.cj.jdbc.Driver
+      - image: circleci/mysql:8.0-ram
+        environment:
+          MYSQL_ROOT_PASSWORD: root
     steps:
       - checkout
-      - run: ./mvnw install -DskipTests
+      - run:
+          name: Wait for Database Connection
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run: sudo apt-get install mysql-client
+      - run: mysql -h 127.0.0.1 -u root -p root -e "CREATE DATABASE ci_db"
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - persist_to_workspace:
+         root: ./
+         paths:
+           - target/
+
+  test:
+    docker:
+      - image: circleci/openjdk:11
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      - attach_workspace:
+          at: ./target
+      - run: ./mvnw test
+
+workflows:
+  version: 2
+  build-then-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
