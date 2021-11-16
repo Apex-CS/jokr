@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   ecomm-mysql:
-    image: mysql
+    image: mysql:8.0
     ports:
       - 3306:3306
     volumes:
@@ -29,7 +29,7 @@ services:
       - DATABASE_HOST=ecomm-mysql
       - DATABASE_USER=springuser
       - DATABASE_PASSWORD=MySQL-P
-      - DATABASE_NAME=db_example
+      - DATABASE_NAME=jokr_db
       - DATABASE_PORT=3306
     networks:
       - ecomm-network
@@ -39,4 +39,4 @@ networks:
 
 volumes:
   mysql-v:
-    external: true
+    external: false

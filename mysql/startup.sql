@@ -1,3 +1,3 @@
-CREATE DATABASE db_example;
+CREATE DATABASE jokr_db;
 CREATE user 'springuser'@'%' identified BY 'MySQL-P';
-GRANT all ON db_example.* TO 'springuser'@'%';
+GRANT all ON jokr_db.* TO 'springuser'@'%';

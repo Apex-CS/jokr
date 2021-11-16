@@ -12,7 +12,7 @@ Step 1 - Create the MySQL database container (just for the first time)
 
 ```bash
 # For Linux use $PWD instead of ${PWD}
-docker run -p 3306:3306 --name jokr-mysql-server -v mysql-v:/var/lib/mysql -v ${PWD}/mysql:/docker-entrypoint-initdb.d -e MYSQL_ROOT_PASSWORD=root -d mysql
+docker run -p 3306:3306 --name jokr-mysql-server -v mysql-v:/var/lib/mysql -v ${PWD}/mysql:/docker-entrypoint-initdb.d -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
 ```
 
 Step 2 - Create the image that builds the project and runs it
