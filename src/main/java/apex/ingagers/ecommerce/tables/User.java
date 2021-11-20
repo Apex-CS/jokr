@@ -1,4 +1,4 @@
-package apex.ingagers.ecommerce;
+package apex.ingagers.ecommerce.tables;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
