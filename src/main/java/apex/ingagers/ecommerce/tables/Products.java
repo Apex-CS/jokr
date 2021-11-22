@@ -1,7 +1,6 @@
 package apex.ingagers.ecommerce.tables;
 
 import java.sql.Timestamp;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,17 +11,22 @@ public class Products {
     private Integer id;
     private String sku;
     private String name;
-    private String descripcion;
+    private String description;
     private Float price;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private int is_active;
     private Timestamp created_at;
-    private Timestamp updated_At;
+    private Timestamp updated_at;
     private int stock;
     private String photo_file_name;
 
     @ManyToMany(mappedBy = "products")
     private List<Categories> categories;
+
+    @ManyToMany(mappedBy = "products")
+    private List<User> user;
+
+    //----------------- END of Table structure-----------------
 
     public Integer getId() {
         return this.id;
@@ -48,12 +52,12 @@ public class Products {
         this.name = name;
     }
 
-    public String getDescripcion() {
-        return this.descripcion;
+    public String getdescription() {
+        return this.description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setdescription(String description) {
+        this.description = description;
     }
 
     public float getPrice() {
@@ -80,12 +84,12 @@ public class Products {
         this.created_at = created_at;
     }
 
-    public Timestamp getUpdated_At() {
-        return this.updated_At;
+    public Timestamp getUpdated_at() {
+        return this.updated_at;
     }
 
-    public void setUpdated_At(Timestamp updated_At) {
-        this.updated_At = updated_At;
+    public void setUpdated_at(Timestamp updated_at) {
+        this.updated_at = updated_at;
     }
 
     public int getStock() {

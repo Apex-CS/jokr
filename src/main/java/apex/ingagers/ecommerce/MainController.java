@@ -32,12 +32,24 @@ public class MainController {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
-    String name = String.valueOf(values.get("name"));
+    
     String email = String.valueOf(values.get("email"));
+    String password = String.valueOf(values.get("password"));
+    String name = String.valueOf(values.get("name"));
+    String lastName = String.valueOf(values.get("lastName"));
+    int is_active = Integer.parseInt(String.valueOf(values.get("is_active")));
+
+    long now = System.currentTimeMillis();
+    Timestamp sqlTimestamp = new Timestamp(now);
 
     User n = new User();
-    n.setName(name);
     n.setEmail(email);
+    n.setPassword(password);
+    n.setName(name);
+    n.setLastName(lastName);
+    n.setUpdated_at(sqlTimestamp);
+    n.setIs_active(is_active);
+    n.setCreated_at(sqlTimestamp);
     userRepository.save(n);
     return "Saved";
   }
@@ -54,11 +66,11 @@ public class MainController {
   public @ResponseBody String addProducts (@RequestBody Map<String,Object> values) {
       String sku = String.valueOf(values.get("sku"));
       String name = String.valueOf(values.get("name"));
-      String descripcion = String.valueOf(values.get("descripcion"));
+      String description = String.valueOf(values.get("description"));
       Float price = Float.parseFloat(String.valueOf(values.get("price")));
       int stock = Integer.parseInt(String.valueOf(values.get("stock")));
       String photo_file_name = String.valueOf(values.get("photo_file_name"));
-
+      int is_active = Integer.parseInt(String.valueOf(values.get("is_active")));
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
@@ -67,11 +79,14 @@ public class MainController {
       Products p = new Products();
       p.setSku(sku);
       p.setName(name);
-      p.setDescripcion(descripcion);
+      p.setdescription(description);
       p.setPrice(price);
-      p.setDescripcion(descripcion);
+      p.setdescription(description);
+      p.setStock(stock);
+      p.setPhoto_file_name(photo_file_name);
+      p.setIs_active(is_active);
       p.setCreated_at(sqlTimestamp);
-      p.setUpdated_At(sqlTimestamp);
+      p.setUpdated_at(sqlTimestamp);
       productsRepository.save(p);
       return "Saved";
   }
@@ -81,7 +96,6 @@ public class MainController {
     // This returns a JSON or XML with the users
     return productsRepository.findAll();
   }
-
 
 
 
