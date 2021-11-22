@@ -103,4 +103,6 @@ public class MainController {
   public @ResponseBody String test() {
     return "This is a test";
   }
+
+  //TODO: make rest of mapping and decide on how to create Many to Many relationships with added attributes
 }
