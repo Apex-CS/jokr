@@ -1,10 +1,8 @@
 package apex.ingagers.ecommerce.tables;
 
 import java.security.Timestamp;
-
 import javax.persistence.*;
 import java.util.List;
-
 import javax.persistence.GeneratedValue;
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -13,16 +11,11 @@ public class Categories {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-
     private String name;
-
     private Timestamp created_at;
     private Timestamp updated_At;
-
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private int is_active;
-
-
 
     @ManyToMany
     @JoinTable(
@@ -32,6 +25,7 @@ public class Categories {
     )
     private List<Products> products;
 
+//----------------- END of Table structure-----------------
 
     public Integer getId() {
         return this.id;
