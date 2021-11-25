@@ -10,10 +10,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
     security_opt:
-    - seccomp:unconfined
+      - seccomp:unconfined
     networks:
       - ecomm-network
-
   ecomm-main:
     image: openjdk:11
     depends_on:
@@ -21,7 +20,14 @@ services:
     working_dir: /work
     volumes:
       - ./:/work
-    entrypoint: ["/bin/bash", "-c" , "./mvnw dependency:go-offline && ./mvnw install && java -jar target/app.jar"]
+    # Change to "./mvnw install -DskipTests" to skip tests
+    entrypoint:
+      [
+        "/bin/bash",
+        "-c",
+        "./mvnw dependency:go-offline && ./mvnw install && java -jar
+          target/app.jar"
+      ]
     ports:
       - 8080:8080
     # restart: on-failure
@@ -33,10 +39,8 @@ services:
       - DATABASE_PORT=3306
     networks:
       - ecomm-network
-
 networks:
-  ecomm-network:
-
+  ecomm-network: null
 volumes:
   mysql-v:
     external: false
