@@ -84,7 +84,7 @@ jobs:
             docker push $IMAGE_NAME:latest
 workflows:
   version: 2
-  build-then-test:
+  app-docker-push:
     jobs:
       - build
       - test:
@@ -93,12 +93,12 @@ workflows:
       - docker-build:
           requires:
             - test
-          # filters:
-          #   branches:
-          #     only: master
+          filters:
+            branches:
+              only: master
       - publish-latest:
           requires:
             - docker-build
-          # filters:
-          #   branches:
-          #     only: master
+          filters:
+            branches:
+              only: master
