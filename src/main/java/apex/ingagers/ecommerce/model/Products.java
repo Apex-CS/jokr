@@ -1,13 +1,13 @@
-package apex.ingagers.ecommerce.tables;
+package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Products {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String sku;
     private String name;
@@ -19,14 +19,18 @@ public class Products {
     private Timestamp updated_at;
     private int stock;
     private String photo_file_name;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Categories> categories;
-
-    @ManyToMany(mappedBy = "products")
-    private List<User> user;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_subcategory")
+    private SubCategories subcategories;
+    
     //----------------- END of Table structure-----------------
+    public SubCategories getSubcategories() {
+        return this.subcategories;
+    }
+
+    public void setSubcategories(SubCategories subcategories) {
+        this.subcategories = subcategories;
+    }
 
     public Integer getId() {
         return this.id;

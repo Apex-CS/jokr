@@ -1,7 +1,6 @@
-package apex.ingagers.ecommerce.tables;
+package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.persistence.*;
 
@@ -29,13 +28,13 @@ public class Addresses {
     @JoinColumn(name = "id_user")
     User user;
 
-    //FK relation with Orders 
-    @OneToMany(mappedBy = "billing_address")
-    List<Orders> billing_address;
+    // //FK relation with Orders 
+    // @OneToMany(mappedBy = "billing_address")
+    // List<Orders> billing_address;
 
-    //FK relation with Orders 
-    @OneToMany(mappedBy = "shipping_address")
-    List<Orders> shipping_address;
+    // //FK relation with Orders 
+    // @OneToMany(mappedBy = "shipping_address")
+    // List<Orders> shipping_address;
 
     //----------------- END of Table structure-----------------
 

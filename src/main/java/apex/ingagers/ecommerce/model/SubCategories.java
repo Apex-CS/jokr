@@ -1,15 +1,15 @@
-package apex.ingagers.ecommerce.tables;
+package apex.ingagers.ecommerce.model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import javax.persistence.*;
-import java.util.List;
 import javax.persistence.GeneratedValue;
 
+
 @Entity // This tells Hibernate to make a table out of this class
-public class Categories {
+public class SubCategories {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private Timestamp created_at;
@@ -17,15 +17,18 @@ public class Categories {
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private int is_active;
 
-    @ManyToMany
-    @JoinTable(
-        name = "category_product",
-        joinColumns = @JoinColumn(name = "id_category", nullable = false),
-        inverseJoinColumns = @JoinColumn(name="id_product", nullable = false)
-    )
-    private List<Products> products;
+    @ManyToOne(fetch = FetchType.LAZY)   
+    @JoinColumn(name = "id_category")
+    Categories categories;
 
 //----------------- END of Table structure-----------------
+    public Categories getCategories() {
+        return this.categories;
+    }
+
+    public void setCategories(Categories categories) {
+        this.categories = categories;
+    }
 
     public Integer getId() {
         return this.id;
