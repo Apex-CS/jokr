@@ -1,4 +1,4 @@
-package apex.ingagers.ecommerce.tables;
+package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
 import javax.persistence.*;
@@ -16,18 +16,18 @@ public class Orders {
     private Timestamp updated_at;
 
     // Foreign Key
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     User user;
 
     // Foreign Key
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "billing_address")
     // TODO: Checar si este nombre de la clase es correcto
     Addresses billing_address;
 
     // Foreign Key
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address")
     // TODO: checar si este mnombre de la clase es correcto
     Addresses shipping_address;

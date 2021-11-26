@@ -1,4 +1,4 @@
-package apex.ingagers.ecommerce.tables;
+package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
 import javax.persistence.*;
@@ -23,11 +23,11 @@ public class User {
   private int is_active;
 
   //FK relation with Orders
-  @OneToMany(mappedBy = "users")
-  List<Orders> orders;
-  //FK relation with Addresses
-  @OneToMany(mappedBy = "addresses")
-  List<Addresses> addresses;
+  // @OneToMany(mappedBy = "users")
+  // List<Orders> orders;
+  // //FK relation with Addresses
+  // @OneToMany(mappedBy = "addresses")
+  // List<Addresses> addresses;
 
   //Many to Many relationship with Products adding Favorites table 
   @ManyToMany
