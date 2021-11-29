@@ -1,9 +1,15 @@
 # Usage
 
-## With only the docker-compose.yml 
+## With only the Docker Compose
 
 ```bash
-docker-compose up
+# Run everything skiping tests
+docker-compose -f docker-compose.dev.yml up
+```
+
+```bash
+# Run everything with tests
+docker-compose -f docker-compose.testing.yml up
 ```
 
 ## With the Dockerfile
