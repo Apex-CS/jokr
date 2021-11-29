@@ -26,9 +26,7 @@ public class EcommerceApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/jokr/add").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/jokr/show").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/jokr/test").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/api/**").allowedOrigins("http://localhost:3000");
 			}
 		};
 	}
