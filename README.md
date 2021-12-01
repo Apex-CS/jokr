@@ -35,11 +35,10 @@ docker run --rm -it -p 8080:8080 --link jokr-mysql-server -e DATABASE_HOST=jokr-
 
 Each time a change is done just run the 2nd and 3rd Step again, making sure that the MySQL continer is started
 
-## To USE Swagger 
+# USE Swagger
 
 Step 1 - Run the proyect
 
 Step 2 - Go to the next link
 
-```URL
 http://localhost:8080/swagger-ui.html
