@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 
+import org.hibernate.type.TrueFalseType;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Categories {
 
@@ -13,7 +15,7 @@ public class Categories {
     private String name;
     private Timestamp created_at;
     private Timestamp updated_At;
-    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(name="is_active", columnDefinition = "TINYINT(1)", nullable = true)
     private int is_active;
 
 //----------------- END of Table structure-----------------

@@ -3,27 +3,31 @@ package apex.ingagers.ecommerce.controller;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import apex.ingagers.ecommerce.model.User;
 import apex.ingagers.ecommerce.repository.UserRepository;
 
-@Controller // This means that this class is a Controller
-@RequestMapping(path="/api") // This means URL's start with /demo (after Application path)
-public class MainController {
-  @Autowired // This means to get the bean called userRepository
-  private UserRepository userRepository;
+@RestController // This means that this class is a Controller
+
+public class UsersController {
+  
+  private final UserRepository userRepository;
+  UsersController(UserRepository userRepository){
+    this.userRepository = userRepository;
+  }
 
 
-  @PostMapping(path="/add") // Map ONLY POST Requests
+  @PostMapping("/user") // Map ONLY POST Requests
   //public @ResponseBody String addNewUser (@RequestParam String name, @RequestParam String email) {
-  public @ResponseBody String addNewUser (@RequestBody Map<String,Object> values) {
+  public String addNewUser (@RequestBody Map<String,Object> values) {
     
     String email = String.valueOf(values.get("email"));
     String password = String.valueOf(values.get("password"));
@@ -46,16 +50,15 @@ public class MainController {
     return "Saved";
   }
 
-  @GetMapping(path="/show")
-  public @ResponseBody Iterable<User> getAllUsers() {
+  @GetMapping("/user")
+  public  Iterable<User> getAllUsers() {
     // This returns a JSON or XML with the users
     return userRepository.findAll();
   }
 
 
-
-  @GetMapping(path="/test")
-  public @ResponseBody String test() {
+  @GetMapping("/test")
+  public String test() {
     return "This is a test";
   }
 }
