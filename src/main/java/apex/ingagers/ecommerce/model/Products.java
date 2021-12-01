@@ -19,6 +19,7 @@ public class Products {
     private Timestamp updated_at;
     private int stock;
     private String photo_file_name;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_subcategory")
     private SubCategories subcategories;

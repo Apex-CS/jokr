@@ -1,36 +1,19 @@
 package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Orders {
+public class Roles {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private float total_cost;
-    private int status;
+    private String role_name;
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private int is_active;
     private Timestamp created_at;
     private Timestamp updated_at;
-
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
-    User user;
-
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_address")
-    Addresses billing_address;
-
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_address")
-    Addresses shipping_address;
-
-    // ----------------- END of Table structure-----------------
 
     public Integer getId() {
         return this.id;
@@ -40,20 +23,12 @@ public class Orders {
         this.id = id;
     }
 
-    public float getTotal_cost() {
-        return this.total_cost;
+    public String getRole_name() {
+        return this.role_name;
     }
 
-    public void setTotal_cost(float total_cost) {
-        this.total_cost = total_cost;
-    }
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
     }
 
     public int getIs_active() {
