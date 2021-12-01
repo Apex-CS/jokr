@@ -25,8 +25,8 @@ services:
       [
         "/bin/sh",
         "-c",
-        "./mvnw dependency:go-offline --no-transfer-progress && ./mvnw install --no-transfer-progress -DskipTests && java
-          -jar target/app.jar"
+        "./mvnw dependency:go-offline && ./mvnw install && java -jar
+          target/app.jar"
       ]
     ports:
       - 8080:8080
@@ -44,7 +44,7 @@ services:
     depends_on:
       - ecomm-main
     ports:
-      - 80:3000
+      - 3000:3000
     networks:
       - ecomm-network
 networks:
