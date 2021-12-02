@@ -2,6 +2,8 @@ package apex.ingagers.ecommerce.controller;
 
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.Optional;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,16 +56,34 @@ public class ProductsController {
         p.setStock(stock);
         p.setPhoto_file_name(photo_file_name);
         p.setCreated_at(sqlTimestamp);
-        p.setUpdated_at(sqlTimestamp);
+        p.setUpdated_at(null);
+        p.setDelete_at(null);
         p.setSubcategories(subcategories);
         
         return productsRepository.save(p);
   }
 
   @GetMapping("/products")
-  public  Iterable<Products> getAllProducts() {
+  public  List<Products> getAllProducts() {
     // This returns a JSON or XML with the users
-    return productsRepository.findAll();
+    return  productsRepository.findAllProducts();
   }
 
+  @DeleteMapping("/products/{id}")
+  public boolean eliminar(@PathVariable("id") Integer id){
+    Optional<Products> optionalproducts = productsRepository.findById(id);
+		
+    if( optionalproducts.isPresent()){
+      Products products = optionalproducts.get();
+      long now = System.currentTimeMillis();
+      Timestamp sqlTimestamp = new Timestamp(now);
+      products.setIs_active(false);
+      products.setDelete_at(sqlTimestamp);
+      productsRepository.save(products);
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 }

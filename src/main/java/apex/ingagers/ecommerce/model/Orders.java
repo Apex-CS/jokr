@@ -10,8 +10,8 @@ public class Orders {
     private Integer id;
     private float total_cost;
     private int status;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private int is_active;
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    private boolean  is_active = true; 
     private Timestamp created_at;
     private Timestamp updated_at;
 
@@ -58,11 +58,11 @@ public class Orders {
         this.status = status;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 

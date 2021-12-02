@@ -14,9 +14,10 @@ public class Products {
     private String description;
     private Float price;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private int is_active;
+    private boolean  is_active = true; 
     private Timestamp created_at;
     private Timestamp updated_at;
+    private Timestamp delete_at;
     private int stock;
     private String photo_file_name;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,11 +73,11 @@ public class Products {
         this.price = price;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 
@@ -96,6 +97,13 @@ public class Products {
         this.updated_at = updated_at;
     }
 
+    public Timestamp getDelete_at() {
+        return this.delete_at;
+    }
+
+    public void setDelete_at(Timestamp delete_at) {
+        this.delete_at = delete_at;
+    }
     public int getStock() {
         return this.stock;
     }
