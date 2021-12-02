@@ -15,20 +15,20 @@ public class Orders {
     private Timestamp created_at;
     private Timestamp updated_at;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
-    User user;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "id_user")
+    // User user;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_address")
-    Addresses billing_address;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "billing_address")
+    // Addresses billing_address;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_address")
-    Addresses shipping_address;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "shipping_address")
+    // Addresses shipping_address;
 
     // ----------------- END of Table structure-----------------
 

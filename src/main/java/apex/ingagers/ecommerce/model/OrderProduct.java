@@ -1,14 +1,15 @@
 package apex.ingagers.ecommerce.model;
 
-import java.sql.Timestamp;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class OrderProduct {
-    // @Id
-    // @GeneratedValue(strategy=GenerationType.AUTO)
-    // private Integer id;
+     @Id
+     @GeneratedValue(strategy=GenerationType.AUTO)
+     private Integer id;
     // private String role_name;
     // @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     // private int is_active;

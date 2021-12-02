@@ -85,7 +85,6 @@ public class ProductsController {
       }else{
         return false;
       }
-
     }
     else{
       return false;
