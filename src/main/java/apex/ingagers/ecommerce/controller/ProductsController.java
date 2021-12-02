@@ -75,12 +75,17 @@ public class ProductsController {
 		
     if( optionalproducts.isPresent()){
       Products products = optionalproducts.get();
-      long now = System.currentTimeMillis();
-      Timestamp sqlTimestamp = new Timestamp(now);
-      products.setIs_active(false);
-      products.setDelete_at(sqlTimestamp);
-      productsRepository.save(products);
-      return true;
+      if(products.getIs_active() == true){
+        long now = System.currentTimeMillis();
+        Timestamp sqlTimestamp = new Timestamp(now);
+        products.setIs_active(false);
+        products.setDelete_at(sqlTimestamp);
+        productsRepository.save(products);
+        return true;
+      }else{
+        return false;
+      }
+
     }
     else{
       return false;
