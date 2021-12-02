@@ -23,13 +23,11 @@ public class Orders {
     // Foreign Key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "billing_address")
-    // TODO: Checar si este nombre de la clase es correcto
     Addresses billing_address;
 
     // Foreign Key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address")
-    // TODO: checar si este mnombre de la clase es correcto
     Addresses shipping_address;
 
     // ----------------- END of Table structure-----------------
