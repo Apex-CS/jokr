@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity // This tells Hibernate to make a table out of this class
 public class Roles {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String role_name;
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")

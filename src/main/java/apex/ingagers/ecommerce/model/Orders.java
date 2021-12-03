@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Entity // This tells Hibernate to make a table out of this class
 public class Orders {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private float total_cost;
     private int status;

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,24 +70,28 @@ public class ProductsController {
     return  productsRepository.findAllProducts();
   }
 
+
   @DeleteMapping("/products/{id}")
   public boolean eliminar(@PathVariable("id") Integer id){
     Optional<Products> optionalproducts = productsRepository.findById(id);
 		
     if( optionalproducts.isPresent()){
       Products products = optionalproducts.get();
-      if(products.getIs_active() == true){
+      if(products.getIs_active() == true)
+      {
         long now = System.currentTimeMillis();
         Timestamp sqlTimestamp = new Timestamp(now);
         products.setIs_active(false);
         products.setDelete_at(sqlTimestamp);
         productsRepository.save(products);
         return true;
-      }else{
+      }else
+      {
         return false;
       }
     }
-    else{
+    else
+    {
       return false;
     }
   }

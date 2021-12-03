@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity // This tells Hibernate to make a table out of this class
 public class Addresses {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private String street1;
     private String street2;
