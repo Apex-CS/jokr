@@ -6,31 +6,29 @@ import javax.persistence.*;
 @Entity // This tells Hibernate to make a table out of this class
 public class Orders {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private float total_cost;
     private int status;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private int is_active;
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    private boolean  is_active = true; 
     private Timestamp created_at;
     private Timestamp updated_at;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
-    User user;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "id_user")
+    // User user;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_address")
-    // TODO: Checar si este nombre de la clase es correcto
-    Addresses billing_address;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "billing_address")
+    // Addresses billing_address;
 
-    // Foreign Key
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_address")
-    // TODO: checar si este mnombre de la clase es correcto
-    Addresses shipping_address;
+    // // Foreign Key
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "shipping_address")
+    // Addresses shipping_address;
 
     // ----------------- END of Table structure-----------------
 
@@ -58,11 +56,11 @@ public class Orders {
         this.status = status;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 

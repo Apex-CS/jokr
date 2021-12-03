@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
   private String email;
   private String password;
@@ -22,13 +22,11 @@ public class User {
   @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
   private int is_active;
 
-  //FK relation with Orders
-  // @OneToMany(mappedBy = "users")
-  // List<Orders> orders;
-  // //FK relation with Addresses
-  // @OneToMany(mappedBy = "addresses")
-  // List<Addresses> addresses;
-
+  //Foreign Key id_role
+  @ManyToOne
+  @JoinColumn(name = "id_role")
+  Roles roles;
+  
   //Many to Many relationship with Products adding Favorites table 
   @ManyToMany
   @JoinTable(
