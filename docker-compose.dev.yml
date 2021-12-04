@@ -6,9 +6,11 @@ services:
       - 3306:3306
     volumes:
       - mysql-v:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: MySQL-P
+      MYSQL_DATABASE: jokr_db
     security_opt:
       - seccomp:unconfined
     networks:
@@ -25,18 +27,21 @@ services:
       [
         "/bin/sh",
         "-c",
-        "./mvnw dependency:go-offline --no-transfer-progress && ./mvnw install --no-transfer-progress -DskipTests && java
-          -jar target/app.jar"
+        "wget -qO-
+          https://raw.githubusercontent.com/eficode/wait-for/v2.2.0/wait-for |
+          sh -s -- ecomm-mysql:3306 -- echo DB ready && ./mvnw
+          dependency:go-offline --no-transfer-progress && ./mvnw install
+          --no-transfer-progress -DskipTests && java -jar target/app.jar"
       ]
     ports:
       - 8080:8080
     # restart: on-failure
     environment:
-      - DATABASE_HOST=ecomm-mysql
-      - DATABASE_USER=springuser
-      - DATABASE_PASSWORD=MySQL-P
-      - DATABASE_NAME=jokr_db
-      - DATABASE_PORT=3306
+      DATABASE_HOST: ecomm-mysql
+      DATABASE_USER: springuser
+      DATABASE_PASSWORD: MySQL-P
+      DATABASE_NAME: jokr_db
+      DATABASE_PORT: 3306
     networks:
       - ecomm-network
   ecomm-front:
