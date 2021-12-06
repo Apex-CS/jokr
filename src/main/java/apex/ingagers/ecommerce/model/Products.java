@@ -17,10 +17,17 @@ public class Products {
     private String description;
     @Column(nullable = false)
     private Float price;
+<<<<<<< HEAD
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
     private boolean  is_active;
     //TODO Revisar si la forma de asignacion de TINYINIT es correcta
     @Column(nullable = false)
+=======
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+
+    //TODO Revisar si la forma de asignacion de TINYINIT es correcta
+    private boolean  is_active = true; 
+>>>>>>> c579e21 (Comments to clarify and search structures)
     private Timestamp created_at;
     // @Column(nullable = false)
     private Timestamp updated_at;
