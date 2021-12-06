@@ -14,6 +14,8 @@ public class Products {
     private String description;
     private Float price;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+
+    //TODO Revisar si la forma de asignacion de TINYINIT es correcta
     private boolean  is_active = true; 
     private Timestamp created_at;
     private Timestamp updated_at;
