@@ -10,13 +10,15 @@ public class Categories {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Timestamp created_at;
+    @Column(nullable = false)
     private Timestamp updated_At;
 
-    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private boolean  is_active = true; 
-
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
+    private boolean  is_active;
 //----------------- END of Table structure-----------------
 
     public Integer getId() {
