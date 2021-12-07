@@ -35,11 +35,10 @@ public class LoadDatabase {
 				String category = categoriesAndSubcategories[i][0];
 				
 				if (categoriesRepository.findByName(category) == null) {
-
+//test
 					categories.setName(category);
 					long now = System.currentTimeMillis();
 					Timestamp sqlTimestamp = new Timestamp(now);
-					categories.setIs_active(false);
 					categories.setCreated_at(sqlTimestamp);
 					categories.setUpdated_At(null);
 
