@@ -11,14 +11,17 @@ public class SubCategories {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Timestamp created_at;
+    @Column(nullable = false)
     private Timestamp updated_At;
-    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
     private int is_active;
 
     @ManyToOne(fetch = FetchType.LAZY)   
-    @JoinColumn(name = "id_category")
+    @JoinColumn(name = "id_category",nullable = false)
     Categories categories;
 
 //----------------- END of Table structure-----------------
