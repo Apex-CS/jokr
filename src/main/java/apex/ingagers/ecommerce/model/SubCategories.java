@@ -15,7 +15,7 @@ public class SubCategories {
     private String name;
     @Column(nullable = false)
     private Timestamp created_at;
-    @Column(nullable = false)
+    // @Column(nullable = false)
     private Timestamp updated_At;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
     private int is_active;

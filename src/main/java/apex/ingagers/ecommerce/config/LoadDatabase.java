@@ -41,7 +41,7 @@ public class LoadDatabase {
 					Timestamp sqlTimestamp = new Timestamp(now);
 					categories.setIs_active(false);
 					categories.setCreated_at(sqlTimestamp);
-					categories.setUpdated_At(sqlTimestamp);
+					categories.setUpdated_At(null);
 
 					categoriesRepository.save(categories);
 					int subCategoriesLenght = categoriesAndSubcategories[i].length;
@@ -57,7 +57,7 @@ public class LoadDatabase {
 							long nows = System.currentTimeMillis();
 							Timestamp sqlTimestamps = new Timestamp(nows);
 							subCategories.setCreated_at(sqlTimestamps);
-							subCategories.setUpdated_At(sqlTimestamps);
+							subCategories.setUpdated_At(null);
 							subCategories.setCategories(categories);
 							subCategoriesRepository.save(subCategories);
 						}
