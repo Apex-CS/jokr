@@ -9,8 +9,8 @@ public class Roles {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    private String role_name;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    private String rolename;
+    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
     private int is_active;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -23,12 +23,12 @@ public class Roles {
         this.id = id;
     }
 
-    public String getRole_name() {
-        return this.role_name;
+    public String getrolename() {
+        return this.rolename;
     }
 
-    public void setRole_name(String role_name) {
-        this.role_name = role_name;
+    public void setrolename(String rolename) {
+        this.rolename = rolename;
     }
 
     public int getIs_active() {

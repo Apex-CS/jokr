@@ -18,7 +18,7 @@ public class Addresses {
     private String postal_code;
     private String phone;
     private String client_name;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
     private int is_active;
     private Timestamp created_at;
     private Timestamp updated_at;
