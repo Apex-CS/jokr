@@ -10,15 +10,15 @@ public class Orders {
     private Integer id;
     private float total_cost;
     private int status;
-    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private boolean  is_active = true; 
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
+    private boolean  is_active; 
     private Timestamp created_at;
     private Timestamp updated_at;
 
     // // Foreign Key
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "id_user")
-    // User user;
+    // Users Users;
 
     // // Foreign Key
     // @ManyToOne(fetch = FetchType.LAZY)

@@ -9,20 +9,30 @@ public class Products {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String sku;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String description;
+    @Column(nullable = false)
     private Float price;
-    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private boolean  is_active = true; 
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
+    private boolean  is_active;
+    //TODO Revisar si la forma de asignacion de TINYINIT es correcta
+    @Column(nullable = false)
     private Timestamp created_at;
+    // @Column(nullable = false)
     private Timestamp updated_at;
+    // @Column(nullable = false)
     private Timestamp delete_at;
+    @Column(nullable = false)
     private int stock;
+    @Column(nullable = false)
     private String photo_file_name;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_subcategory")
+    @JoinColumn(name = "id_subcategory",nullable = false)
     private SubCategories subcategories;
     
     //----------------- END of Table structure-----------------

@@ -18,7 +18,7 @@ public class Addresses {
     private String postal_code;
     private String phone;
     private String client_name;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
     private int is_active;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -26,7 +26,7 @@ public class Addresses {
     //Foreign Key id_user
     @ManyToOne
     @JoinColumn(name = "id_user")
-    User user;
+    Users Users;
 
     // //FK relation with Orders 
     // @OneToMany(mappedBy = "billing_address")

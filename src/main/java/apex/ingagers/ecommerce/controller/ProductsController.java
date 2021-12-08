@@ -66,7 +66,7 @@ public class ProductsController {
 
   @GetMapping("/products")
   public  List<Products> getAllProducts() {
-    // This returns a JSON or XML with the users
+    // This returns a JSON or XML with the Users
     return  productsRepository.findAllProducts();
   }
 
@@ -95,4 +95,34 @@ public class ProductsController {
       return false;
     }
   }
+
+  @PutMapping("/products/{id}")
+  public Products update(@PathVariable("id") Integer id, @RequestBody Map<String,Object> values) {
+    
+    Optional<Products> optionalproducts = productsRepository.findById(id);
+		
+    if( optionalproducts.isPresent()){
+      Products products = optionalproducts.get();
+      products.setSku(String.valueOf(values.get("sku")));
+      products.setName(String.valueOf(values.get("name")));
+      products.setdescription(String.valueOf(values.get("description")));
+      products.setPrice(Float.parseFloat(String.valueOf(values.get("price"))));
+      products.setStock( Integer.parseInt(String.valueOf(values.get("stock"))));
+      products.setPhoto_file_name(String.valueOf(values.get("photo_file_name")));
+
+      long now = System.currentTimeMillis();
+      Timestamp sqlTimestamp = new Timestamp(now);
+
+      products.setUpdated_at(sqlTimestamp);
+
+      SubCategories subcategories;
+      subcategories = subCategoriesRepository.findByName(String.valueOf(values.get("subcategory")));
+      products.setSubcategories(subcategories);  
+      productsRepository.save(products);
+
+      return products;
+    }
+    return null;
+  }
+
 }

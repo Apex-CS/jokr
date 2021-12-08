@@ -10,7 +10,7 @@ public class OrderProduct {
      @Id
      @GeneratedValue(strategy=GenerationType.IDENTITY)
      private Integer id;
-    // private String role_name;
+    // private String rolename;
     // @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     // private int is_active;
     // private Timestamp created_at;
