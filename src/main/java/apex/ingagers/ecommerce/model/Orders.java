@@ -18,7 +18,7 @@ public class Orders {
     // // Foreign Key
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "id_user")
-    // User user;
+    // Users Users;
 
     // // Foreign Key
     // @ManyToOne(fetch = FetchType.LAZY)

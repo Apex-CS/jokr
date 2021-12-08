@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 // import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 // import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import apex.ingagers.ecommerce.model.User;
+import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.UserRepository;
 
 @SpringBootTest
@@ -21,10 +21,10 @@ public class UserRepositoryTest {
 
     // @Test
     // public void shouldSavedUser(){
-    //     User user = new User();
-    //     user.setName("Robes");
-    //     user.setEmail("Funciona el tests");
-    //     User userSaved = userRepository.save(user);
+    //     Users Users = new Users();
+    //     Users.setName("Robes");
+    //     Users.setEmail("Funciona el tests");
+    //     Users userSaved = userRepository.save(Users);
     //     Integer compare = 0;
     //     assertNotEquals(userSaved.getId(), compare);
     // }

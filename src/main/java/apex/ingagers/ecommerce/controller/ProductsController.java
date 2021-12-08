@@ -66,7 +66,7 @@ public class ProductsController {
 
   @GetMapping("/products")
   public  List<Products> getAllProducts() {
-    // This returns a JSON or XML with the users
+    // This returns a JSON or XML with the Users
     return  productsRepository.findAllProducts();
   }
 
