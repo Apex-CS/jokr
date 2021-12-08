@@ -1,10 +1,4 @@
 version: 2.1
-executors:
-  docker-publisher:
-    environment:
-      IMAGE_NAME: pacodevs/jokr
-    docker:
-      - image: circleci/buildpack-deps:stretch
 jobs:
   build:
     docker:
@@ -82,6 +76,33 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
+  heroku-release:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Tag image for Heroku push
+          command: docker tag $IMAGE_NAME:latest $HEROKU_IMAGE:latest
+      - run:
+          name: Push Docker image to Heroku
+          command: |
+            set -x
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            docker push $HEROKU_IMAGE:latest
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a jokr-back web
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: pacodevs/jokr
+      HEROKU_IMAGE: registry.heroku.com/jokr-back/web
+    docker:
+      - image: circleci/buildpack-deps:stretch
 workflows:
   version: 2
   app-docker-push:
@@ -99,6 +120,12 @@ workflows:
       - publish-latest:
           requires:
             - docker-build
+          filters:
+            branches:
+              only: master
+      - heroku-release:
+          requires:
+            - publish-latest
           filters:
             branches:
               only: master
