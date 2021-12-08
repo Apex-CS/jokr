@@ -72,6 +72,12 @@ public class ProductsController {
     return  productsRepository.findAllProducts();
   }
 
+  @GetMapping("/products/{id}")
+  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id)
+  {
+        return productsRepository.findProductsById(id); 
+  }
+
 
   @DeleteMapping("/products/{id}")
   public boolean eliminar(@PathVariable("id") Integer id){
