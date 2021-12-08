@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
   @Id
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String email;
   private String password;
@@ -19,24 +19,30 @@ public class User {
   private String lastName;
   private Timestamp created_at;
   private Timestamp updated_at;
-  @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
-  private int is_active;
+  private Timestamp delete_at;
 
-  //Foreign Key id_role
+  @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1", insertable = false)
+  private boolean is_active;
+
+  // Foreign Key id_role
   @ManyToOne
   @JoinColumn(name = "id_role")
   Roles roles;
-  
-  //Many to Many relationship with Products adding Favorites table 
+
+  // Many to Many relationship with Products adding Favorites table
   @ManyToMany
-  @JoinTable(
-    name = "favorites",
-    joinColumns = @JoinColumn(name = "id_user", nullable = false),
-    inverseJoinColumns = @JoinColumn(name = "id_product", nullable = false)
-  )
+  @JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "id_user", nullable = false), inverseJoinColumns = @JoinColumn(name = "id_product", nullable = false))
   private List<Products> products;
 
-  //----------------- END of Table structure-----------------
+  // ----------------- END of Table structure-----------------
+
+  public Roles getRole() {
+    return this.roles;
+  }
+
+  public void setRole(Roles rol) {
+    this.roles=rol;
+  }
 
   public Integer getId() {
     return id;
@@ -78,11 +84,11 @@ public class User {
     this.lastName = lastName;
   }
 
-  public int getIs_active() {
+  public boolean getIs_active() {
     return this.is_active;
   }
 
-  public void setIs_active(int is_active) {
+  public void setIs_active(boolean is_active) {
     this.is_active = is_active;
   }
 
@@ -100,5 +106,14 @@ public class User {
 
   public void setUpdated_at(Timestamp updated_at) {
     this.updated_at = updated_at;
+  }
+
+
+  public Timestamp getDelete_at() {
+    return this.delete_at;
+  }
+
+  public void setDelete_at(Timestamp delete_at) {
+    this.delete_at = delete_at;
   }
 }

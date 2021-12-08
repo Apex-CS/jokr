@@ -7,15 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import apex.ingagers.ecommerce.model.Categories;
+import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.SubCategories;
 import apex.ingagers.ecommerce.repository.CategoriesRepository;
+import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
 
 @Configuration
 public class LoadDatabase {
 	@Bean
 	CommandLineRunner loadData(SubCategoriesRepository subCategoriesRepository,
-			CategoriesRepository categoriesRepository) {
+			CategoriesRepository categoriesRepository,RolesRepository rolesRepository) {
 		return (args) -> {
 
 			String[][] categoriesAndSubcategories = {
@@ -35,7 +37,7 @@ public class LoadDatabase {
 				String category = categoriesAndSubcategories[i][0];
 				
 				if (categoriesRepository.findByName(category) == null) {
-//test
+
 					categories.setName(category);
 					long now = System.currentTimeMillis();
 					Timestamp sqlTimestamp = new Timestamp(now);
@@ -63,6 +65,25 @@ public class LoadDatabase {
 					}
 				}
 			}
+			String[] roleNames = { "Admin", "Shopper" };
+			long now = System.currentTimeMillis();
+			Timestamp sqlTimestamp = new Timestamp(now);
+			int roleNamesLenght = roleNames.length;
+
+
+
+			for (Integer i=0;i<roleNamesLenght;i++) {
+				String rolName = roleNames[i];
+				if (rolesRepository.findByRolename(rolName) == null) {
+				
+					Roles rol = new Roles();
+					rol.setrolename(rolName);
+					rol.setCreated_at(sqlTimestamp);
+					rol.setUpdated_at(null);
+					rolesRepository.save(rol);
+				}
+			}
 		};
 	}
+
 }
