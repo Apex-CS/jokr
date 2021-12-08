@@ -87,14 +87,14 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Tag image for Heroku push
-          command: docker tag $IMAGE_NAME:latest $HEROKU_IMAGE:release
+          command: docker tag $IMAGE_NAME:latest $HEROKU_IMAGE:latest
       - run:
           name: Push Docker image to Heroku
           command: |
             set -x
             sudo curl https://cli-assets.heroku.com/install.sh | sh
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
-            docker push $HEROKU_IMAGE:release
+            docker push $HEROKU_IMAGE:latest
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a jokr-back web
 executors:
   docker-publisher:
