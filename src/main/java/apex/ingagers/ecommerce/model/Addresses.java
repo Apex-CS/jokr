@@ -26,7 +26,7 @@ public class Addresses {
     //Foreign Key id_user
     @ManyToOne
     @JoinColumn(name = "id_user")
-    User user;
+    Users Users;
 
     // //FK relation with Orders 
     // @OneToMany(mappedBy = "billing_address")
