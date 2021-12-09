@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import apex.ingagers.ecommerce.model.Products;
@@ -21,6 +22,7 @@ import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
 
 
 @RestController
+@RequestMapping("/api/v1")
 public class ProductsController {
 
     private final ProductsRepository productsRepository;
@@ -68,6 +70,12 @@ public class ProductsController {
   public  List<Products> getAllProducts() {
     // This returns a JSON or XML with the Users
     return  productsRepository.findAllProducts();
+  }
+
+  @GetMapping("/products/{id}")
+  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id)
+  {
+        return productsRepository.findProductsById(id); 
   }
 
 
