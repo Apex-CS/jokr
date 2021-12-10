@@ -117,7 +117,7 @@ public class ProductsController {
   }
 
   @GetMapping("/products/{id}")
-  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id) {
+  public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
