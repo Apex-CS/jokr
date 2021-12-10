@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity // This tells Hibernate to make a table out of this class
 public class SubCategories {
@@ -11,12 +13,19 @@ public class SubCategories {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false)
     private String name;
+
+    @JsonIgnore
     @Column(nullable = false)
     private Timestamp created_at;
     // @Column(nullable = false)
+
+    @JsonIgnore
     private Timestamp updated_At;
+
+    @JsonIgnore
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
     private boolean is_active;
 
