@@ -27,14 +27,34 @@ public class Products {
     private Timestamp delete_at;
     @Column(nullable = false)
     private int stock;
-    @Column(nullable = false)
-    private String photo_file_name;
-    
+    @Column
+    private String photoUrl;
+    @Column
+    private String photoPublicId;
+
+ 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_subcategory",nullable = false)
     private SubCategories subcategories;
     
     //----------------- END of Table structure-----------------
+    public String getPhotoPublicId() {
+        return this.photoPublicId;
+    }
+
+    public void setPhotoPublicId(String photoPublicId) {
+        this.photoPublicId = photoPublicId;
+    }
+
+    public String getPhotoUrl() {
+        return this.photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+
     public SubCategories getSubcategories() {
         return this.subcategories;
     }
@@ -122,12 +142,6 @@ public class Products {
         this.stock = stock;
     }
 
-    public String getPhoto_file_name() {
-        return this.photo_file_name;
-    }
 
-    public void setPhoto_file_name(String photo_file_name) {
-        this.photo_file_name = photo_file_name;
-    }
 
 }
