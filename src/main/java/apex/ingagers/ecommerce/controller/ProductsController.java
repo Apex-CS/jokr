@@ -1,5 +1,6 @@
 package apex.ingagers.ecommerce.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -116,7 +117,7 @@ public class ProductsController {
   }
 
   @GetMapping("/products/{id}")
-  public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
+  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
