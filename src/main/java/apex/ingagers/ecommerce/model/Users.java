@@ -38,8 +38,25 @@ public class Users {
   @JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "id_user", nullable = false), inverseJoinColumns = @JoinColumn(name = "id_product", nullable = false))
   private List<Products> products;
 
+  @Column
+  private String photoUrl;
+  @Column
+  private String photoPublicId;
   // ----------------- END of Table structure-----------------
+  public String getphotoPublicId() {
+    return this.photoPublicId;
+  }
 
+  public void setphotoPublicId(String photoPublicId) {
+    this.photoPublicId = photoPublicId;
+  }
+  public String getphotoUrl() {
+    return this.photoUrl;
+  }
+
+  public void setphotoUrl(String photoUrl) {
+    this.photoUrl = photoUrl;
+  }
   public Roles getRole() {
     return this.roles;
   }

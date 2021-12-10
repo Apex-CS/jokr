@@ -69,7 +69,7 @@ public class ProductsController {
     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
     String photoUrl = String.valueOf(uploadResult.get("url"));
-    String photoPublicId = String.valueOf(uploadResult.get("publicId"));
+    String photoPublicId = String.valueOf(uploadResult.get("public_id"));
 
     Products p = new Products();
     p.setSku(sku);
@@ -95,12 +95,12 @@ public class ProductsController {
   }
 
   @GetMapping("/products/{id}")
-  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id) {
+  public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
   @DeleteMapping("/products/{id}")
-  public boolean eliminar(@PathVariable("id") Integer id) {
+  public boolean deleteProduct(@PathVariable("id") Integer id) {
     Optional<Products> optionalproducts = productsRepository.findById(id);
 
     if (optionalproducts.isPresent()) {
@@ -121,7 +121,7 @@ public class ProductsController {
   }
 
   @PutMapping("/products/{id}")
-  public Products update(@PathVariable("id") Integer id, @RequestBody Map<String, Object> values) {
+  public Products updateProduct(@PathVariable("id") Integer id, @RequestBody Map<String, Object> values) {
 
     Optional<Products> optionalproducts = productsRepository.findById(id);
 
@@ -132,7 +132,6 @@ public class ProductsController {
       products.setdescription(String.valueOf(values.get("description")));
       products.setPrice(Float.parseFloat(String.valueOf(values.get("price"))));
       products.setStock(Integer.parseInt(String.valueOf(values.get("stock"))));
-      products.setPhoto_file_name(String.valueOf(values.get("photo_file_name")));
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
