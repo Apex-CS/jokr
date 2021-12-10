@@ -19,7 +19,6 @@ public class Products {
     private Float price;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
     private boolean  is_active;
-    //TODO Revisar si la forma de asignacion de TINYINIT es correcta
     @Column(nullable = false)
     private Timestamp created_at;
     // @Column(nullable = false)
