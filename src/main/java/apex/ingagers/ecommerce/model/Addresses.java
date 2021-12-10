@@ -30,9 +30,7 @@ public class Addresses {
     private int is_active;
     @Column(nullable = false)
     private Timestamp created_at;
-    @Column(nullable = false)
     private Timestamp updated_at;
-    @Column(nullable = false)
     private Timestamp delete_at;
 
     //Foreign Key id_user

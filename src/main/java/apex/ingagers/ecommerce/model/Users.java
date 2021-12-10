@@ -13,10 +13,15 @@ public class Users {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+  @Column(nullable = false)
   private String email;
+  @Column(nullable = false)
   private String password;
+  @Column(nullable = false)
   private String name;
+  @Column(nullable = false)
   private String lastName;
+  @Column(nullable = false)
   private Timestamp created_at;
   private Timestamp updated_at;
   private Timestamp delete_at;
