@@ -1,23 +1,24 @@
 package apex.ingagers.ecommerce.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import apex.ingagers.ecommerce.model.Products;
 import apex.ingagers.ecommerce.model.SubCategories;
@@ -41,7 +42,7 @@ public class ProductsController {
   }
 
   @PostMapping("/products") // Map ONLY POST Requests
-  Products addProducts(@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file)
+  HttpStatus addProducts(@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file)
       throws IOException {
 
     ObjectMapper mapper = new ObjectMapper();
@@ -61,12 +62,27 @@ public class ProductsController {
     SubCategories subcategories;
     subcategories = subCategoriesRepository.findByName(subcategorias);
 
+    if(file==null|| file.isEmpty()){
+      //If the file(image) is empty
+      throw new ResponseStatusException(
+        HttpStatus.NOT_FOUND, "Please upload an image");
+    }
+
+    List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+    String fileContentType = file.getContentType();
+
+   if(!contentTypes.contains(fileContentType)) {
+        // the is not correct extension
+        throw new ResponseStatusException(
+          HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
+    }
+
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh",
-        "api_key", "679976426528739",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A",
-        "secure", true));
-    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+      "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
+      "api_key", "941731261856649",                  //"679976426528739",
+      "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
+      "secure", true));
+    Map uploadResult = cloudinary.uploader().upload(file.getBytes(),ObjectUtils.asMap( "folder", "Jokr/productsPhoto/"));
 
     String photoUrl = String.valueOf(uploadResult.get("url"));
     String photoPublicId = String.valueOf(uploadResult.get("public_id"));
@@ -85,7 +101,12 @@ public class ProductsController {
     p.setDelete_at(null);
     p.setSubcategories(subcategories);
 
-    return productsRepository.save(p);
+    if(productsRepository.save(p) != null){
+      return HttpStatus.OK;
+    }
+   else{
+    return HttpStatus.BAD_REQUEST;
+   }
   }
 
   @GetMapping("/products")
@@ -121,12 +142,17 @@ public class ProductsController {
   }
 
   @PutMapping("/products/{id}")
-  public Products updateProduct(@PathVariable("id") Integer id, @RequestBody Map<String, Object> values) {
+  public Products updateProduct(@PathVariable("id") Integer id,@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file) throws IOException {
 
-    Optional<Products> optionalproducts = productsRepository.findById(id);
+    ObjectMapper mapper = new ObjectMapper();
+    // convert JSON string to Map
+    Map<String, Object> values = mapper.readValue(jsonString, Map.class);
 
-    if (optionalproducts.isPresent()) {
-      Products products = optionalproducts.get();
+
+    Optional<Products> optionalProducts = productsRepository.findById(id);
+
+    if (optionalProducts.isPresent()) {
+      Products products = optionalProducts.get();
       products.setSku(String.valueOf(values.get("sku")));
       products.setName(String.valueOf(values.get("name")));
       products.setdescription(String.valueOf(values.get("description")));
@@ -142,6 +168,27 @@ public class ProductsController {
       subcategories = subCategoriesRepository.findByName(String.valueOf(values.get("subcategory")));
       products.setSubcategories(subcategories);
       productsRepository.save(products);
+
+      if(file!=null){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+          String fileContentType = file.getContentType();
+      
+         if(!contentTypes.contains(fileContentType)) {
+              // the is not correct extension
+              throw new ResponseStatusException(
+                HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
+          }
+          Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
+            "api_key", "941731261856649",                  //"679976426528739",
+            "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
+            "secure", true));
+            
+              Products product =  optionalProducts.get();
+              String photoPublicId =  product.getPhotoPublicId();
+              Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap( "overwrite","true","public_id",photoPublicId));
+        }
+
       return products;
     }
     return null;
