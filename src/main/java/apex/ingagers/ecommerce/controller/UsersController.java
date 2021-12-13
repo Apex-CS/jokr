@@ -147,14 +147,12 @@ public class UsersController {
   @PutMapping("/users/{id}")
   public Users updateUser(@PathVariable("id") Integer id,@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file) throws IOException {
 
-
     ObjectMapper mapper = new ObjectMapper();
     // convert JSON string to Map
     Map<String, Object> values = mapper.readValue(jsonString, Map.class);
 
     Optional<Users> optionaluser = userRepository.findById(id);
 
-  
     if (optionaluser.isPresent()) {
       Users Users = optionaluser.get();
       String role = String.valueOf(values.get("role"));
@@ -162,10 +160,6 @@ public class UsersController {
       String password = String.valueOf(values.get("password"));
       String name = String.valueOf(values.get("name"));
       String lastName = String.valueOf(values.get("lastName"));
-  
-  
-
-
      
 if(file!=null){
   List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
