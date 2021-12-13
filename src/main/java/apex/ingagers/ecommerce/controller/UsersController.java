@@ -153,7 +153,6 @@ public class UsersController {
 
     Optional<Users> optionaluser = userRepository.findById(id);
 
-  
     if (optionaluser.isPresent()) {
       Users Users = optionaluser.get();
       String role = String.valueOf(values.get("role"));
