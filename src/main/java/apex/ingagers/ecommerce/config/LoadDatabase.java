@@ -9,15 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import apex.ingagers.ecommerce.model.Categories;
 import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.SubCategories;
+import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.CategoriesRepository;
 import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
+import apex.ingagers.ecommerce.repository.UserRepository;
 
 @Configuration
 public class LoadDatabase {
 	@Bean
 	CommandLineRunner loadData(SubCategoriesRepository subCategoriesRepository,
-			CategoriesRepository categoriesRepository,RolesRepository rolesRepository) {
+			CategoriesRepository categoriesRepository,RolesRepository rolesRepository, UserRepository userRepository) {
 		return (args) -> {
 
 			String[][] categoriesAndSubcategories = {
@@ -65,12 +67,11 @@ public class LoadDatabase {
 					}
 				}
 			}
-			String[] roleNames = { "Admin", "Shopper" };
+
+			String[] roleNames = { "Shopper", "Admin" };
 			long now = System.currentTimeMillis();
 			Timestamp sqlTimestamp = new Timestamp(now);
 			int roleNamesLenght = roleNames.length;
-
-
 
 			for (Integer i=0;i<roleNamesLenght;i++) {
 				String rolName = roleNames[i];
@@ -83,6 +84,40 @@ public class LoadDatabase {
 					rolesRepository.save(rol);
 				}
 			}
+
+			Users user = new Users();
+			if(userRepository.findByName("John")==null){
+				user.setName("John");
+				user.setLastName("Doe");
+				user.setEmail("john.doe@git.com");
+				user.setPassword("test123");
+
+				Roles rol;
+    			rol = rolesRepository.findByRolename("Admin");
+
+				user.setRole(rol);
+				user.setCreated_at(sqlTimestamp);
+				user.setDelete_at(null);
+				user.setUpdated_at(null);
+				userRepository.save(user);
+			}
+
+			if(userRepository.findByName("Jane")==null){
+				user.setName("Jane");
+				user.setLastName("Doe");
+				user.setEmail("jane.doe@git.com");
+				user.setPassword("test123");
+
+				Roles rol;
+    			rol = rolesRepository.findByRolename("Shopper");
+
+				user.setRole(rol);
+				user.setCreated_at(sqlTimestamp);
+				user.setDelete_at(null);
+				user.setUpdated_at(null);
+				userRepository.save(user);
+			}
+			
 		};
 	}
 

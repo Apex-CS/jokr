@@ -25,13 +25,12 @@ public class Users {
   private Timestamp created_at;
   private Timestamp updated_at;
   private Timestamp delete_at;
-
   @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1", insertable = false)
   private boolean is_active;
 
   // Foreign Key id_role
   @ManyToOne
-  @JoinColumn(name = "id_role")
+  @JoinColumn(name = "id_role", nullable = false)
   Roles roles;
 
   // Many to Many relationship with Products adding Favorites table
