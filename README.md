@@ -8,8 +8,18 @@ docker-compose -f docker-compose.dev.yml up
 ```
 
 ```bash
+# To remove everything run 
+docker-compose -f docker-compose.dev.yml down -v
+```
+
+```bash
 # Run everything with tests
 docker-compose -f docker-compose.testing.yml up
+```
+
+```bash
+# To remove everything run 
+docker-compose -f docker-compose.testing.yml down -v
 ```
 
 ## With the Dockerfile
@@ -35,10 +45,10 @@ docker run --rm -it -p 8080:8080 --link jokr-mysql-server -e DATABASE_HOST=jokr-
 
 Each time a change is done just run the 2nd and 3rd Step again, making sure that the MySQL continer is started
 
-# USE Swagger
+## Use Swagger
 
 Step 1 - Run the proyect
 
 Step 2 - Go to the next link
 
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
