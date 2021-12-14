@@ -75,4 +75,52 @@ public class AddressesController {
     public List<Addresses> getAllUserAddresses(@PathVariable("id_user") Integer id_user) {
         return addressesRepository.findAddressesByUserId(id_user);
     }
+
+    @DeleteMapping("/addresses/{id}")
+    public boolean delete(@PathVariable("id") Integer id) {
+        Optional<Addresses> optionaladdresses = addressesRepository.findById(id);
+    
+        if (optionaladdresses.isPresent()) {
+          Addresses addresses = optionaladdresses.get();
+          if (addresses.getIs_active() == true) {
+            long now = System.currentTimeMillis();
+            Timestamp sqlTimestamp = new Timestamp(now);
+            addresses.setIs_active(false);
+            addresses.setDelete_at(sqlTimestamp);
+            addressesRepository.save(addresses);
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+
+    @PutMapping("/addresses/{id}")
+    public Addresses update(@PathVariable("id") Integer id, @RequestBody Map<String, Object> values) {
+
+        Optional<Addresses> optionaladdresses = addressesRepository.findById(id);
+
+        if (optionaladdresses.isPresent()) {
+            Addresses addresses = optionaladdresses.get();
+            addresses.setStreet1(String.valueOf(values.get("street1")));
+            addresses.setStreet2(String.valueOf(values.get("street2")));
+            addresses.setColonia(String.valueOf(values.get("colonia")));
+            addresses.setMunicipio(String.valueOf(values.get("municipio")));
+            addresses.setState(String.valueOf(values.get("state")));
+            addresses.setCountry(String.valueOf(values.get("country")));
+            addresses.setPostal_code(String.valueOf(values.get("postal_code")));
+            addresses.setPhone(String.valueOf(values.get("phone")));
+            addresses.setClient_name(String.valueOf(values.get("client_name")));
+
+            long now = System.currentTimeMillis();
+            Timestamp sqlTimestamp = new Timestamp(now);
+
+            addresses.setUpdated_at(sqlTimestamp);
+
+            return addresses;
+        }
+        return null;
+    }
 }
