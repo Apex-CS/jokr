@@ -27,7 +27,7 @@ public class Addresses {
     @Column(nullable = false)
     private String client_name;
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false,nullable = false)
-    private int is_active;
+    private boolean is_active;
     @Column(nullable = false)
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -136,11 +136,11 @@ public class Addresses {
         this.client_name = client_name;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 
