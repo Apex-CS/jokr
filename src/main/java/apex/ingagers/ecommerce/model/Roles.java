@@ -11,7 +11,7 @@ public class Roles {
     private Integer id;
     private String rolename;
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
-    private int is_active;
+    private boolean is_active;
     private Timestamp created_at;
     private Timestamp updated_at;
 
@@ -31,11 +31,11 @@ public class Roles {
         this.rolename = rolename;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 

@@ -18,7 +18,7 @@ public class SubCategories {
     // @Column(nullable = false)
     private Timestamp updated_At;
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
-    private int is_active;
+    private boolean is_active;
 
     @ManyToOne(fetch = FetchType.LAZY)   
     @JoinColumn(name = "id_category",nullable = false)
@@ -45,10 +45,10 @@ public class SubCategories {
     public void setName(String name) {
         this.name = name;
     }
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
     public Timestamp getCreated_at() {

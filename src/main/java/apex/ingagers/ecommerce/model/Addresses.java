@@ -1,6 +1,7 @@
 package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import javax.persistence.*;
 
@@ -9,31 +10,48 @@ public class Addresses {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String street1;
     private String street2;
     private String colonia;
+    @Column(nullable = false)
     private String municipio;
+    @Column(nullable = false)
     private String state;
+    @Column(nullable = false)
     private String country;
+    @Column(nullable = false)
     private String postal_code;
+    @Column(nullable = false)
     private String phone;
+    @Column(nullable = false)
     private String client_name;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
-    private int is_active;
+    @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false,nullable = false)
+    private boolean is_active;
+    @Column(nullable = false)
     private Timestamp created_at;
     private Timestamp updated_at;
+    private Timestamp delete_at;
 
     //Foreign Key id_user
-    @ManyToOne
-    @JoinColumn(name = "id_user")
-    Users Users;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
+    private Users users;
+
+    public Users getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
 
     // //FK relation with Orders 
     // @OneToMany(mappedBy = "billing_address")
     // List<Orders> billing_address;
 
     // //FK relation with Orders 
-    // @OneToMany(mappedBy = "shipping_address")
+    // @OneToMany(mappedBy = "shipping_address")x
     // List<Orders> shipping_address;
 
     //----------------- END of Table structure-----------------
@@ -118,11 +136,11 @@ public class Addresses {
         this.client_name = client_name;
     }
 
-    public int getIs_active() {
+    public boolean getIs_active() {
         return this.is_active;
     }
 
-    public void setIs_active(int is_active) {
+    public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
 
@@ -140,6 +158,14 @@ public class Addresses {
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public Timestamp getDelete_at() {
+        return this.delete_at;
+    }
+
+    public void setDelete_at(Timestamp delete_at) {
+        this.delete_at = delete_at;
     }
 
 }
