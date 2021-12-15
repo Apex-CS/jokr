@@ -24,6 +24,7 @@ import apex.ingagers.ecommerce.model.Products;
 import apex.ingagers.ecommerce.model.SubCategories;
 import apex.ingagers.ecommerce.repository.ProductsRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
@@ -42,19 +43,10 @@ public class ProductsController {
   }
 
   @PostMapping("/products") // Map ONLY POST Requests
-  HttpStatus addProducts(@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file)
+  HttpStatus addProducts(@RequestBody Products product, @RequestPart("file") MultipartFile file)
       throws IOException {
 
-    ObjectMapper mapper = new ObjectMapper();
-    // convert JSON string to Map
-    Map<String, Object> values = mapper.readValue(jsonString, Map.class);
-
-    String sku = String.valueOf(values.get("sku"));
-    String name = String.valueOf(values.get("name"));
-    String description = String.valueOf(values.get("description"));
-    Float price = Float.parseFloat(String.valueOf(values.get("price")));
-    Integer stock = Integer.parseInt(String.valueOf(values.get("stock")));
-    String subcategorias = String.valueOf(values.get("subcategory"));
+    String subcategorias = product.getSubcategoriesName();
 
     long now = System.currentTimeMillis();
     Timestamp sqlTimestamp = new Timestamp(now);
@@ -62,51 +54,45 @@ public class ProductsController {
     SubCategories subcategories;
     subcategories = subCategoriesRepository.findByName(subcategorias);
 
-    if(file==null|| file.isEmpty()){
-      //If the file(image) is empty
+    if (file == null || file.isEmpty()) {
+      // If the file(image) is empty
       throw new ResponseStatusException(
-        HttpStatus.NOT_FOUND, "Please upload an image");
+          HttpStatus.NOT_FOUND, "Please upload an image");
     }
 
     List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
     String fileContentType = file.getContentType();
 
-   if(!contentTypes.contains(fileContentType)) {
-        // the is not correct extension
-        throw new ResponseStatusException(
+    if (!contentTypes.contains(fileContentType)) {
+      // the is not correct extension
+      throw new ResponseStatusException(
           HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-      "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
-      "api_key", "941731261856649",                  //"679976426528739",
-      "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
-      "secure", true));
-    Map uploadResult = cloudinary.uploader().upload(file.getBytes(),ObjectUtils.asMap( "folder", "Jokr/productsPhoto/"));
+        "cloud_name", "dpakhjsmh", // ddlqf2qer
+        "api_key", "679976426528739", // "941731261856649",
+        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", true));
+    Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+        ObjectUtils.asMap("folder", "Jokr/productsPhoto/"));
 
     String photoUrl = String.valueOf(uploadResult.get("url"));
     String photoPublicId = String.valueOf(uploadResult.get("public_id"));
 
     Products p = new Products();
-    p.setSku(sku);
-    p.setName(name);
-    p.setdescription(description);
-    p.setPrice(price);
-    p.setdescription(description);
-    p.setStock(stock);
+    p = product;
+
     p.setPhotoUrl(photoUrl);
     p.setPhotoPublicId(photoPublicId);
     p.setCreated_at(sqlTimestamp);
-    p.setUpdated_at(null);
-    p.setDelete_at(null);
     p.setSubcategories(subcategories);
 
-    if(productsRepository.save(p) != null){
+    if (productsRepository.save(p) != null) {
       return HttpStatus.OK;
+    } else {
+      return HttpStatus.BAD_REQUEST;
     }
-   else{
-    return HttpStatus.BAD_REQUEST;
-   }
   }
 
   @GetMapping("/products")
@@ -141,23 +127,19 @@ public class ProductsController {
     }
   }
 
-  @PutMapping("/products/{id}")
-  public Products updateProduct(@PathVariable("id") Integer id,@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file) throws IOException {
+  @PutMapping("/products/{id_Product}")
+  public Products updateProduct(@PathVariable("idProduct") Integer idProduct, @RequestBody Products product,
+      @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-    ObjectMapper mapper = new ObjectMapper();
-    // convert JSON string to Map
-    Map<String, Object> values = mapper.readValue(jsonString, Map.class);
-
-
-    Optional<Products> optionalProducts = productsRepository.findById(id);
+    Optional<Products> optionalProducts = productsRepository.findById(idProduct);
 
     if (optionalProducts.isPresent()) {
       Products products = optionalProducts.get();
-      products.setSku(String.valueOf(values.get("sku")));
-      products.setName(String.valueOf(values.get("name")));
-      products.setdescription(String.valueOf(values.get("description")));
-      products.setPrice(Float.parseFloat(String.valueOf(values.get("price"))));
-      products.setStock(Integer.parseInt(String.valueOf(values.get("stock"))));
+      products.setSku(product.getSku());
+      products.setName(product.getName());
+      products.setdescription(product.getdescription());
+      products.setPrice(product.getPrice());
+      products.setStock(product.getStock());
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
@@ -165,29 +147,32 @@ public class ProductsController {
       products.setUpdated_at(sqlTimestamp);
 
       SubCategories subcategories;
-      subcategories = subCategoriesRepository.findByName(String.valueOf(values.get("subcategory")));
+      subcategories = subCategoriesRepository.findByName(product.getSubcategoriesName());
       products.setSubcategories(subcategories);
+
+      System.out.println("holi");
+
       productsRepository.save(products);
 
-      if(file!=null){
+      if (file != null) {
         List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
-          String fileContentType = file.getContentType();
-      
-         if(!contentTypes.contains(fileContentType)) {
-              // the is not correct extension
-              throw new ResponseStatusException(
-                HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
-          }
-          Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
-            "api_key", "941731261856649",                  //"679976426528739",
-            "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
-            "secure", true));
-            
-              Products product =  optionalProducts.get();
-              String photoPublicId =  product.getPhotoPublicId();
-              Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap( "overwrite","true","public_id",photoPublicId));
+        String fileContentType = file.getContentType();
+
+        if (!contentTypes.contains(fileContentType)) {
+          throw new ResponseStatusException(
+              HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
         }
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dpakhjsmh", // "ddlqf2qer",
+            "api_key", "679976426528739", // "941731261856649",
+            "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+            "secure", true));
+
+        Products currentProduct = optionalProducts.get();
+        String photoPublicId = currentProduct.getPhotoPublicId();
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+            ObjectUtils.asMap("overwrite", "true", "public_id", photoPublicId));
+      }
 
       return products;
     }

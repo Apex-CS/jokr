@@ -59,6 +59,11 @@ public class Products {
         return this.subcategories;
     }
 
+    public String getSubcategoriesName() {
+        return this.subcategories.getName();
+    }
+
+
     public void setSubcategories(SubCategories subcategories) {
         this.subcategories = subcategories;
     }

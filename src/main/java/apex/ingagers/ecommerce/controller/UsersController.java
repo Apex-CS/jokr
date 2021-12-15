@@ -28,6 +28,7 @@ import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.UserRepository;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController // This means that this class is a Controller
 @RequestMapping("/api/v1")
@@ -42,70 +43,56 @@ public class UsersController {
   }
 
   @PostMapping("/users") // Map ONLY POST Requests
-  // public @ResponseBody String addNewUser (@RequestParam String name,
-  // @RequestParam String email) {
+  HttpStatus addNewUser(@RequestBody Users user, @RequestPart("file") MultipartFile file) throws IOException {
 
-  HttpStatus addNewUser(@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file) throws IOException{
+    String role = user.getRoleName();
 
-    ObjectMapper mapper = new ObjectMapper();
-    // convert JSON string to Map
-    Map<String, Object> values = mapper.readValue(jsonString, Map.class);
-    String role = String.valueOf(values.get("role"));
-    String email = String.valueOf(values.get("email"));
-    String password = String.valueOf(values.get("password"));
-    String name = String.valueOf(values.get("name")); 
-    String lastName = String.valueOf(values.get("lastName"));
     long now = System.currentTimeMillis();
     Timestamp sqlTimestamp = new Timestamp(now);
 
     Roles rol;
     rol = rolesRepository.findByRolename(role);
 
-    //File Validations
-    if(file==null|| file.isEmpty()){
-      //If the file(image) is empty
+    // File Validations
+    if (file == null || file.isEmpty()) {
+      // If the file(image) is empty
       throw new ResponseStatusException(
-        HttpStatus.NOT_FOUND, "Please upload an image");
+          HttpStatus.NOT_FOUND, "Please upload an image");
     }
 
     List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
     String fileContentType = file.getContentType();
 
-   if(!contentTypes.contains(fileContentType)) {
-        // the is not correct extension
-        throw new ResponseStatusException(
+    if (!contentTypes.contains(fileContentType)) {
+      // the is not correct extension
+      throw new ResponseStatusException(
           HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-      "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
-      "api_key", "941731261856649",                  //"679976426528739",
-      "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
-      "secure", true));
-      Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap( "folder", "Jokr/usersPhoto/"));
+        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
+        "api_key", "679976426528739", // "941731261856649",
+        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", true));
+    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "Jokr/usersPhoto/"));
 
-      String photoUrl = String.valueOf(uploadResult.get("url"));
-      String photoPublicId = String.valueOf(uploadResult.get("public_id"));
+    String photoUrl = String.valueOf(uploadResult.get("url"));
+    String photoPublicId = String.valueOf(uploadResult.get("public_id"));
 
     Users n = new Users();
-    n.setEmail(email);
-    n.setPassword(password);
-    n.setName(name);
-    n.setLastName(lastName);
+    n = user;
     n.setRole(rol);
     n.setphotoUrl(photoUrl);
     n.setphotoPublicId(photoPublicId);
-    n.setUpdated_at(null);
     n.setCreated_at(sqlTimestamp);
-   
 
-    if(userRepository.save(n) != null){
+    System.out.println("Holaa");
+    if (userRepository.save(n) != null) {
       return HttpStatus.OK;
+    } else {
+      return HttpStatus.BAD_REQUEST;
     }
-   else{
-    return HttpStatus.BAD_REQUEST;
-   }
-  
+
   }
 
   @GetMapping("/users")
@@ -114,11 +101,9 @@ public class UsersController {
     return userRepository.findAllUsers();
   }
 
-
   @GetMapping("/users/{id}")
-  public Optional<Users> getUserbyId(@PathVariable("id") Integer id)
-    {
-        return userRepository.findUserById(id); 
+  public Optional<Users> getUserbyId(@PathVariable("id") Integer id) {
+    return userRepository.findUserById(id);
   }
 
   @DeleteMapping("/users/{id}")
@@ -144,42 +129,42 @@ public class UsersController {
     }
   }
 
-  @PutMapping("/users/{id}")
-  public Users updateUser(@PathVariable("id") Integer id,@RequestParam("json") String jsonString, @RequestPart("file") MultipartFile file) throws IOException {
+  @PutMapping("/users/{id_User}")
+  public Users updateUser(@PathVariable("idUser") Integer idUser, @RequestBody Users user,
+      @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-    ObjectMapper mapper = new ObjectMapper();
     // convert JSON string to Map
-    Map<String, Object> values = mapper.readValue(jsonString, Map.class);
 
-    Optional<Users> optionaluser = userRepository.findById(id);
+    Optional<Users> optionaluser = userRepository.findById(idUser);
 
     if (optionaluser.isPresent()) {
       Users Users = optionaluser.get();
-      String role = String.valueOf(values.get("role"));
-      String email = String.valueOf(values.get("email"));
-      String password = String.valueOf(values.get("password"));
-      String name = String.valueOf(values.get("name"));
-      String lastName = String.valueOf(values.get("lastName"));
-     
-if(file!=null){
-  List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
-    String fileContentType = file.getContentType();
+      String role = user.getRoleName();
+      String email = user.getEmail();
+      String password = user.getPassword();
+      String name = user.getName();
+      String lastName = user.getLastName();
 
-   if(!contentTypes.contains(fileContentType)) {
-        // the is not correct extension
-        throw new ResponseStatusException(
-          HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
-    }
-  Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-    "cloud_name", "ddlqf2qer",              //"dpakhjsmh",
-    "api_key", "941731261856649",                  //"679976426528739",
-    "api_secret", "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",              //"a4vooY53qGsobBvJAU4i4Jf5__A",
-    "secure", true));
-    
-      Users user =  optionaluser.get();
-      String photoPublicId =  user.getphotoPublicId();
-      Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap( "overwrite","true","public_id",photoPublicId));
-}
+      if (file != null) {
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+        String fileContentType = file.getContentType();
+
+        if (!contentTypes.contains(fileContentType)) {
+          // the is not correct extension
+          throw new ResponseStatusException(
+              HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
+        }
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dpakhjsmh", // "ddlqf2qer",
+            "api_key", "679976426528739", // "941731261856649",
+            "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+            "secure", true));
+
+        Users currentUser = optionaluser.get();
+        String photoPublicId = currentUser.getphotoPublicId();
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+            ObjectUtils.asMap("overwrite", "true", "public_id", photoPublicId));
+      }
       Roles rol;
       rol = rolesRepository.findByRolename(role);
 
