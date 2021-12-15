@@ -8,10 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Users {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonIgnore
   private Integer id;
   @Column(nullable = false)
   private String email;
@@ -22,9 +25,13 @@ public class Users {
   @Column(nullable = false)
   private String lastName;
   @Column(nullable = false)
+  @JsonIgnore
   private Timestamp created_at;
+  @JsonIgnore
   private Timestamp updated_at;
+  @JsonIgnore
   private Timestamp delete_at;
+  @JsonIgnore
   @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1", insertable = false)
   private boolean is_active;
 
@@ -34,18 +41,43 @@ public class Users {
   Roles roles;
 
   // Many to Many relationship with Products adding Favorites table
+  @JsonIgnore
   @ManyToMany
   @JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "id_user", nullable = false), inverseJoinColumns = @JoinColumn(name = "id_product", nullable = false))
   private List<Products> products;
 
+  @Column
+  private String photoUrl;
+  @Column
+  private String photoPublicId;
+
   // ----------------- END of Table structure-----------------
+  public String getphotoPublicId() {
+    return this.photoPublicId;
+  }
+
+  public void setphotoPublicId(String photoPublicId) {
+    this.photoPublicId = photoPublicId;
+  }
+
+  public String getphotoUrl() {
+    return this.photoUrl;
+  }
+
+  public void setphotoUrl(String photoUrl) {
+    this.photoUrl = photoUrl;
+  }
 
   public Roles getRole() {
     return this.roles;
   }
 
+  public String getRoleName() {
+    return this.roles.getrolename();
+  }
+
   public void setRole(Roles rol) {
-    this.roles=rol;
+    this.roles = rol;
   }
 
   public Integer getId() {
@@ -111,7 +143,6 @@ public class Users {
   public void setUpdated_at(Timestamp updated_at) {
     this.updated_at = updated_at;
   }
-
 
   public Timestamp getDelete_at() {
     return this.delete_at;

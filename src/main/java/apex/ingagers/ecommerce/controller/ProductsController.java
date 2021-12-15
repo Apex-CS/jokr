@@ -1,23 +1,34 @@
 package apex.ingagers.ecommerce.controller;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import apex.ingagers.ecommerce.model.Products;
 import apex.ingagers.ecommerce.model.SubCategories;
 import apex.ingagers.ecommerce.repository.ProductsRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,15 +43,10 @@ public class ProductsController {
   }
 
   @PostMapping("/products") // Map ONLY POST Requests
-  Products addProducts(@RequestBody Map<String, Object> values) {
-    String sku = String.valueOf(values.get("sku"));
-    String name = String.valueOf(values.get("name"));
-    String description = String.valueOf(values.get("description"));
-    Float price = Float.parseFloat(String.valueOf(values.get("price")));
-    int stock = Integer.parseInt(String.valueOf(values.get("stock")));
-    String photo_file_name = String.valueOf(values.get("photo_file_name"));
-    String subcategorias = String.valueOf(values.get("subcategory"));
-    // casteo de string
+  HttpStatus addProducts(@RequestBody Products product, @RequestPart("file") MultipartFile file)
+      throws IOException {
+
+    String subcategorias = product.getSubcategoriesName();
 
     long now = System.currentTimeMillis();
     Timestamp sqlTimestamp = new Timestamp(now);
@@ -48,20 +54,45 @@ public class ProductsController {
     SubCategories subcategories;
     subcategories = subCategoriesRepository.findByName(subcategorias);
 
+    if (file == null || file.isEmpty()) {
+      // If the file(image) is empty
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Please upload an image");
+    }
+
+    List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+    String fileContentType = file.getContentType();
+
+    if (!contentTypes.contains(fileContentType)) {
+      // the is not correct extension
+      throw new ResponseStatusException(
+          HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
+    }
+
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+        "cloud_name", "dpakhjsmh", // ddlqf2qer
+        "api_key", "679976426528739", // "941731261856649",
+        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", true));
+    Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+        ObjectUtils.asMap("folder", "Jokr/productsPhoto/"));
+
+    String photoUrl = String.valueOf(uploadResult.get("url"));
+    String photoPublicId = String.valueOf(uploadResult.get("public_id"));
+
     Products p = new Products();
-    p.setSku(sku);
-    p.setName(name);
-    p.setdescription(description);
-    p.setPrice(price);
-    p.setdescription(description);
-    p.setStock(stock);
-    p.setPhoto_file_name(photo_file_name);
+    p = product;
+
+    p.setPhotoUrl(photoUrl);
+    p.setPhotoPublicId(photoPublicId);
     p.setCreated_at(sqlTimestamp);
-    p.setUpdated_at(null);
-    p.setDelete_at(null);
     p.setSubcategories(subcategories);
 
-    return productsRepository.save(p);
+    if (productsRepository.save(p) != null) {
+      return HttpStatus.OK;
+    } else {
+      return HttpStatus.BAD_REQUEST;
+    }
   }
 
   @GetMapping("/products")
@@ -71,12 +102,12 @@ public class ProductsController {
   }
 
   @GetMapping("/products/{id}")
-  public Optional<Products> getProductsbyId(@PathVariable("id") Integer id) {
+  public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
   @DeleteMapping("/products/{id}")
-  public boolean eliminar(@PathVariable("id") Integer id) {
+  public boolean deleteProduct(@PathVariable("id") Integer id) {
     Optional<Products> optionalproducts = productsRepository.findById(id);
 
     if (optionalproducts.isPresent()) {
@@ -96,19 +127,19 @@ public class ProductsController {
     }
   }
 
-  @PutMapping("/products/{id}")
-  public Products update(@PathVariable("id") Integer id, @RequestBody Map<String, Object> values) {
+  @PutMapping("/products/{id_Product}")
+  public Products updateProduct(@PathVariable("idProduct") Integer idProduct, @RequestBody Products product,
+      @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
-    Optional<Products> optionalproducts = productsRepository.findById(id);
+    Optional<Products> optionalProducts = productsRepository.findById(idProduct);
 
-    if (optionalproducts.isPresent()) {
-      Products products = optionalproducts.get();
-      products.setSku(String.valueOf(values.get("sku")));
-      products.setName(String.valueOf(values.get("name")));
-      products.setdescription(String.valueOf(values.get("description")));
-      products.setPrice(Float.parseFloat(String.valueOf(values.get("price"))));
-      products.setStock(Integer.parseInt(String.valueOf(values.get("stock"))));
-      products.setPhoto_file_name(String.valueOf(values.get("photo_file_name")));
+    if (optionalProducts.isPresent()) {
+      Products products = optionalProducts.get();
+      products.setSku(product.getSku());
+      products.setName(product.getName());
+      products.setdescription(product.getdescription());
+      products.setPrice(product.getPrice());
+      products.setStock(product.getStock());
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
@@ -116,13 +147,35 @@ public class ProductsController {
       products.setUpdated_at(sqlTimestamp);
 
       SubCategories subcategories;
-      subcategories = subCategoriesRepository.findByName(String.valueOf(values.get("subcategory")));
+      subcategories = subCategoriesRepository.findByName(product.getSubcategoriesName());
       products.setSubcategories(subcategories);
+
+      System.out.println("holi");
+
       productsRepository.save(products);
+
+      if (file != null) {
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+        String fileContentType = file.getContentType();
+
+        if (!contentTypes.contains(fileContentType)) {
+          throw new ResponseStatusException(
+              HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
+        }
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dpakhjsmh", // "ddlqf2qer",
+            "api_key", "679976426528739", // "941731261856649",
+            "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+            "secure", true));
+
+        Products currentProduct = optionalProducts.get();
+        String photoPublicId = currentProduct.getPhotoPublicId();
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+            ObjectUtils.asMap("overwrite", "true", "public_id", photoPublicId));
+      }
 
       return products;
     }
     return null;
   }
-
 }

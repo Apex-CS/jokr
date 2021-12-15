@@ -20,8 +20,8 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/v1/**"))
+                .apis(RequestHandlerSelectors.any())
                 .build()
                 .enable(Boolean.parseBoolean(enableSwagger))
                 .apiInfo(getInfo());
