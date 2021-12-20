@@ -27,7 +27,12 @@ public class SubCategoriesController {
     }
 
     @GetMapping("/subcategories/{id}")
-    public Optional<SubCategories> getSubCategoriesById(@PathVariable("id") Integer id){
+    public List<SubCategories> getSubCategoriesById(@PathVariable("id") Integer id){
         return subCategoriesRepository.findSubCategoriesById(id);
+    }
+
+    @GetMapping("/subcategories/categoies/{id_categories}")
+    public  List<SubCategories> getSubCategoriesByIdCategories(@PathVariable("id_categories") Integer id_categories){
+        return subCategoriesRepository.findSubCategoriesByIdCategory(id_categories);
     }
 }
