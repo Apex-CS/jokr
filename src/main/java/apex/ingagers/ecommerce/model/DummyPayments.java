@@ -9,17 +9,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 
 @Entity
-public class DummyPayment {
+public class DummyPayments {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
     private Integer id;
+	@JsonIgnore
     private Timestamp created_at;
+	@JsonIgnore
     private Timestamp updated_at;
+	@JsonIgnore
     private Timestamp delete_at; 
 
   //TODO: Delete these lines when orders and orderproducts are ready and modify the dependant code to work with the order relation.
+
+  @Column(nullable = false)
+	private String status;
     @Column(nullable = false)
     private Integer amount;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,16 +33,66 @@ public class DummyPayment {
     private Users user;
 
     @Column(nullable = false)
-    private String currency;
+	private String currency;
+
 
     //TODO: Discomment these lines when orders and orderproducts are ready.
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "id_order) 
     // private Orders order;
-    
-      
-    //----------------- END of Table structure-----------------
+	@Transient
+	String cardNumber;
+	@Transient
+	String expMonth;
+	@Transient
+	String expYear;
+	@Transient
+	String securityCode;
 
+
+    //----------------- END of Table structure-----------------
+	
+	public String getCurrency() {
+		return this.currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+	
+	public String getSecurityCode() {
+		return this.securityCode;
+	}
+
+	public void setSecurityCode(String securityCode) {
+		this.securityCode = securityCode;
+	}
+
+
+	public String getExpYear() {
+		return this.expYear;
+	}
+
+	public void setExpYear(String expYear) {
+		this.expYear = expYear;
+	}
+
+
+	public String getExpMonth() {
+		return this.expMonth;
+	}
+
+	public void setExpMonth(String expMonth) {
+		this.expMonth = expMonth;
+	}
+
+	public String getCardNumber() {
+		return this.cardNumber;
+	}
+
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+	}
 
 	public Users getUser() {
 		return this.user;
@@ -84,17 +140,11 @@ public class DummyPayment {
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
-
-    @Column(nullable = false)
-    boolean status;
-
-	public boolean isStatus() {
+	public String getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
-	} 
-
-
+	}
 }

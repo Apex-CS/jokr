@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class Users {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonIgnore
   private Integer id;
   @Column(nullable = false)
   private String email;
