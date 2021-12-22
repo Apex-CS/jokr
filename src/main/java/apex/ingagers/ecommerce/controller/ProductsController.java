@@ -82,7 +82,7 @@ public class ProductsController {
     return map;
   }
 
-  @PutMapping("/products/image/{id_image}")
+  @DeleteMapping("/products/image/{id_image}")
   public Map<String, String> updateImage(@PathVariable("id_image") String id_image) throws IOException {
 
     String idImage = "Jokr/productsPhoto/" + id_image;
