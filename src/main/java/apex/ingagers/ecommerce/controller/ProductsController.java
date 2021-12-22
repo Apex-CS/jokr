@@ -25,6 +25,7 @@ import apex.ingagers.ecommerce.model.Products;
 import apex.ingagers.ecommerce.model.SubCategories;
 import apex.ingagers.ecommerce.repository.ProductsRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
+import io.swagger.annotations.ApiOperation;
 
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
@@ -77,35 +78,26 @@ public class ProductsController {
 
     map.put("id", photoId);
     map.put("url", photoUrl);
-    
+
     return map;
   }
 
   @PutMapping("/products/image/{id_image}")
-  public Map<String, String> updateImage(@PathVariable("id_image") String id_image,
-      @RequestPart(value = "file", required = false) MultipartFile file)
-      throws IOException {
+  public Map<String, String> updateImage(@PathVariable("id_image") String id_image) throws IOException {
 
-     String idImage = "Jokr/productsPhoto/"+ id_image;
+    String idImage = "Jokr/productsPhoto/" + id_image;
     HashMap<String, String> map = new HashMap<>();
 
-    if (file != null) {
-      List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
-      String fileContentType = file.getContentType();
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
+        "api_key", "679976426528739", // "941731261856649",
+        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", true));
 
-      if (!contentTypes.contains(fileContentType)) {
-        throw new ResponseStatusException(
-            HttpStatus.NOT_ACCEPTABLE, "Please upload an image with the correct extension(JPG,JPEG,PNG)");
-      }
-      Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-          "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-          "api_key", "679976426528739", // "941731261856649",
-          "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-          "secure", true));
+    cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 
-      cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
-    }
     map.put("ID", String.valueOf(idImage));
+    map.put("RESPONSE", String.valueOf(idImage));
 
     return map;
 
@@ -136,6 +128,7 @@ public class ProductsController {
     return productsRepository.findAllProducts();
   }
 
+  @ApiOperation(value = "Finds Contacts by id", notes = "")
   @GetMapping("/products/{id}")
   public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
@@ -163,7 +156,8 @@ public class ProductsController {
   }
 
   @PutMapping("/products/{id_Product}")
-  public Products updateProduct(@PathVariable("idProduct") Integer idProduct, @RequestBody Products product) throws IOException {
+  public Products updateProduct(@PathVariable("idProduct") Integer idProduct, @RequestBody Products product)
+      throws IOException {
 
     Optional<Products> optionalProducts = productsRepository.findById(idProduct);
 
