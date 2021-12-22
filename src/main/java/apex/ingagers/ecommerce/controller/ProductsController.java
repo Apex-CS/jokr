@@ -30,6 +30,7 @@ import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class ProductsController {
@@ -149,8 +150,6 @@ public class ProductsController {
       SubCategories subcategories;
       subcategories = subCategoriesRepository.findByName(product.getSubcategoriesName());
       products.setSubcategories(subcategories);
-
-      System.out.println("holi");
 
       productsRepository.save(products);
 

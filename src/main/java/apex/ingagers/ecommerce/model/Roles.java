@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Roles {
     @Id
@@ -12,7 +14,9 @@ public class Roles {
     private String rolename;
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
     private boolean is_active;
+    @JsonIgnore
     private Timestamp created_at;
+    @JsonIgnore
     private Timestamp updated_at;
 
     public Integer getId() {

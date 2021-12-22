@@ -3,6 +3,7 @@ package apex.ingagers.ecommerce.controller;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,9 @@ import java.util.Optional;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import apex.ingagers.ecommerce.model.Roles;
@@ -34,6 +39,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @RequestMapping("/api/v1")
 public class UsersController {
 
+  @Value("${stripe.apikey}")
+  String stripeKey;
+
   private final UserRepository userRepository;
   private final RolesRepository rolesRepository;
 
@@ -43,7 +51,8 @@ public class UsersController {
   }
 
   @PostMapping("/users") // Map ONLY POST Requests
-  HttpStatus addNewUser(@RequestBody Users user, @RequestPart("file") MultipartFile file) throws IOException {
+  HttpStatus addNewUser(@RequestBody Users user, @RequestPart("file") MultipartFile file)
+      throws IOException, StripeException {
 
     String role = user.getRoleName();
 
@@ -86,9 +95,22 @@ public class UsersController {
     n.setphotoPublicId(photoPublicId);
     n.setCreated_at(sqlTimestamp);
 
-    System.out.println("Holaa");
+    if (n.getRoleName() != "Admin") {
+      String userEmail = n.getEmail();
+      String userName = n.getName() + " " + n.getLastName();
+      Stripe.apiKey = stripeKey;
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("name", userName);
+      params.put("email", userEmail);
+
+      Customer customer = Customer.create(params);
+      n.setCustomerPaymentId(customer.getId());
+    }
+
     if (userRepository.save(n) != null) {
       return HttpStatus.OK;
+
     } else {
       return HttpStatus.BAD_REQUEST;
     }

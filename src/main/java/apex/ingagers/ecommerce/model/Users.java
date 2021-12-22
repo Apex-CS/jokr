@@ -10,11 +10,12 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.springframework.web.multipart.MultipartFile;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Users {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonIgnore
   private Integer id;
   @Column(nullable = false)
   private String email;
@@ -51,7 +52,18 @@ public class Users {
   @Column
   private String photoPublicId;
 
+  @Column
+  String customerPaymentId;
+
   // ----------------- END of Table structure-----------------
+  public String getCustomerPaymentId() {
+    return this.customerPaymentId;
+  }
+
+  public void setCustomerPaymentId(String customerPaymentId) {
+    this.customerPaymentId = customerPaymentId;
+  }
+
   public String getphotoPublicId() {
     return this.photoPublicId;
   }
