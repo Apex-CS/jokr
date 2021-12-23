@@ -45,10 +45,9 @@ jobs:
             - v1-dependencies-
       - attach_workspace:
           at: ./target
-      - run: ./mvnw test
+      - run: ./mvnw verify
       - store_artifacts:
           path: target
-      - run: ./mvnw verify
   docker-build:
     executor: docker-publisher
     steps:
