@@ -47,7 +47,8 @@ jobs:
           at: ./target
       - run: ./mvnw test
       - store_artifacts:
-          path:  target
+          path: target
+      - run: ./mvnw verify
   docker-build:
     executor: docker-publisher
     steps:
