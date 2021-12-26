@@ -53,6 +53,13 @@ public class ProductsController {
       return map;
     }
 
+    // File Validations
+    if (file == null || file.isEmpty()) {
+      // If the file(image) is empty
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Please upload an image");
+    }
+
     List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
     String fileContentType = file.getContentType();
 
@@ -83,7 +90,7 @@ public class ProductsController {
   }
 
   @DeleteMapping("/products/image/{id_image}")
-  public Map<String, String> updateImage(@PathVariable("id_image") String id_image) throws IOException {
+  public Map<String, String> deleteImage(@PathVariable("id_image") String id_image) throws IOException {
 
     String idImage = "Jokr/productsPhoto/" + id_image;
     HashMap<String, String> map = new HashMap<>();
@@ -104,7 +111,7 @@ public class ProductsController {
   }
 
   @PostMapping("/products") // Map ONLY POST Requests
-  Products addProducts(@RequestBody Products product) {
+  HttpStatus addProducts(@RequestBody Products product) {
 
     String subcategorias = product.getSubcategoriesName();
 
@@ -119,7 +126,11 @@ public class ProductsController {
     p.setCreated_at(sqlTimestamp);
     p.setSubcategories(subcategories);
 
-    return productsRepository.save(p);
+    if (productsRepository.save(p) != null) {
+      return HttpStatus.OK;
+    } else {
+      return HttpStatus.BAD_REQUEST;
+    }
   }
 
   @GetMapping("/products")

@@ -3,12 +3,12 @@ package apex.ingagers.ecommerce.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.UserRepository;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1")

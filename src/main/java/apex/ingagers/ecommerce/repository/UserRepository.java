@@ -16,9 +16,13 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
    Optional<Users> findUserById(Integer id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    Optional<Users> findByName(String name);
 =======
    @Query(value = "SELECT * FROM users WHERE  is_active = 1 and email=?1 and password=?2", nativeQuery = true)
+=======
+   @Query(value = "SELECT * FROM users WHERE  is_active = 1  AND email=?1 AND password=?2", nativeQuery = true)
+>>>>>>> 7a6be74 (Update method of add image by User)
    List<Users> VerifyCredentials(String email, String password );
 
    Users findByName(String name);
