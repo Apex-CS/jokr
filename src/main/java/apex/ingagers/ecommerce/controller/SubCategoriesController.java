@@ -30,7 +30,7 @@ public class SubCategoriesController {
         return subCategoriesRepository.findSubCategoriesById(id);
     }
 
-    @GetMapping("/subcategories/categoies/{id_categories}")
+    @GetMapping("/subcategories/categories/{id_categories}")
     public List<SubCategories> getSubCategoriesByIdCategories(@PathVariable("id_categories") Integer id_categories) {
         return subCategoriesRepository.findSubCategoriesByIdCategory(id_categories);
     }
