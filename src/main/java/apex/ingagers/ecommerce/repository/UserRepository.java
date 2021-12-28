@@ -1,7 +1,6 @@
 package apex.ingagers.ecommerce.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +12,7 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
    List<Users> findAllUsers();
 
    @Query(value = "SELECT * FROM users WHERE  is_active = 1 and id=?1", nativeQuery = true)
-   Optional<Users> findUserById(Integer id);
+   List<Users> findUserById(Integer id);
 
 <<<<<<< HEAD
 <<<<<<< HEAD

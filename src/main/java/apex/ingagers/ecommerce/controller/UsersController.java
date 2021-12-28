@@ -3,7 +3,6 @@ package apex.ingagers.ecommerce.controller;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -165,17 +164,17 @@ public class UsersController {
   }
 
   @GetMapping("/users/{id}")
-  public Optional<Users> getUserbyId(@PathVariable("id") Integer id) {
+  public List<Users> getUserbyId(@PathVariable("id") Integer id) {
     return userRepository.findUserById(id);
   }
 
   @DeleteMapping("/users/{id}")
   public boolean deleteUser(@PathVariable("id") Integer id) {
 
-    Optional<Users> optionalUser = userRepository.findById(id);
+    List<Users> optionalUser = userRepository.findUserById(id);
 
-    if (optionalUser.isPresent()) {
-      Users Users = optionalUser.get();
+    if (!optionalUser.isEmpty()) {
+      Users Users = optionalUser.get(0);
       if (Users.getIs_active() == true) {
 
         long now = System.currentTimeMillis();
@@ -192,13 +191,12 @@ public class UsersController {
     }
   }
 
-  @PutMapping("/users/{id_User}")
-  public Users updateUser(@PathVariable("idUser") Integer idUser, @RequestBody Users user)
-      throws IOException {
+  @PutMapping("/users/{id}")
+  public Users updateUser(@PathVariable("id") Integer id, @RequestBody Users user) {
 
-    Optional<Users> optionaluser = userRepository.findById(idUser);
+    List<Users> optionaluser = userRepository.findUserById(id);
 
-    if (optionaluser.isPresent()) {
+    if (!optionaluser.isEmpty()) {
 
       List <Users> list = userRepository.VerifyCredentials(user.getEmail());
       if(!list.isEmpty()){
@@ -209,7 +207,7 @@ public class UsersController {
       String hash = argon2.hash(1, 1024, 1, user.getPassword());
 
 
-      Users Users = optionaluser.get();
+      Users Users = optionaluser.get(0);
       String role = user.getRoleName();
       String email = user.getEmail();
       String password = hash;

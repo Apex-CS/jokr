@@ -3,7 +3,6 @@ package apex.ingagers.ecommerce.controller;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -147,10 +146,10 @@ public class ProductsController {
 
   @DeleteMapping("/products/{id}")
   public boolean deleteProduct(@PathVariable("id") Integer id) {
-    Optional<Products> optionalproducts = productsRepository.findById(id);
+    List<Products> optionalproducts = productsRepository.findProductsById(id);
 
-    if (optionalproducts.isPresent()) {
-      Products products = optionalproducts.get();
+    if (!optionalproducts.isEmpty()) {
+      Products products = optionalproducts.get(0);
       if (products.getIs_active() == true) {
         long now = System.currentTimeMillis();
         Timestamp sqlTimestamp = new Timestamp(now);
@@ -173,24 +172,22 @@ public class ProductsController {
 
     if (!optionalProducts.isEmpty()) {
       Products products = optionalProducts.get(0);
-      products.setSku(product.getSku());
-      products.setName(product.getName());
-      products.setdescription(product.getdescription());
-      products.setPrice(product.getPrice());
-      products.setStock(product.getStock());
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
+      SubCategories subcategories = subCategoriesRepository.findByName(product.getSubcategoriesName());
 
+      products.setdescription(product.getdescription());
+      products.setName(product.getName());
+      products.setPhotoPublicId(product.getPhotoPublicId());
+      products.setPhotoUrl(product.getPhotoUrl());
+      products.setPrice(product.getPrice());
+      products.setSku(product.getSku());
+      products.setStock(product.getStock());
       products.setUpdated_at(sqlTimestamp);
-
-      SubCategories subcategories;
-      subcategories = subCategoriesRepository.findByName(product.getSubcategoriesName());
       products.setSubcategories(subcategories);
 
-      productsRepository.save(products);
-
-      return products;
+      return productsRepository.save(products);
     }
     return null;
   }
