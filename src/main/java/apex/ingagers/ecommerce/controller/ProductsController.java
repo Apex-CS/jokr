@@ -141,7 +141,7 @@ public class ProductsController {
 
   @ApiOperation(value = "Finds Contacts by id", notes = "")
   @GetMapping("/products/{id}")
-  public Optional<Products> getProductbyId(@PathVariable("id") Integer id) {
+  public List<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
@@ -166,14 +166,13 @@ public class ProductsController {
     }
   }
 
-  @PutMapping("/products/{id_Product}")
-  public Products updateProduct(@PathVariable("idProduct") Integer idProduct, @RequestBody Products product)
-      throws IOException {
+  @PutMapping("/products/{id}")
+  public Products updateProduct(@PathVariable("id") Integer id, @RequestBody Products product) {
 
-    Optional<Products> optionalProducts = productsRepository.findById(idProduct);
+    List<Products> optionalProducts = productsRepository.findProductsById(id);
 
-    if (optionalProducts.isPresent()) {
-      Products products = optionalProducts.get();
+    if (!optionalProducts.isEmpty()) {
+      Products products = optionalProducts.get(0);
       products.setSku(product.getSku());
       products.setName(product.getName());
       products.setdescription(product.getdescription());

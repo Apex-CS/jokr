@@ -33,6 +33,8 @@ import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.UserRepository;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -55,6 +57,16 @@ public class UsersController {
   @PostMapping("/users") // Map ONLY POST Requests
   HttpStatus addNewUser(@RequestBody Users user) {
 
+    List <Users> list = userRepository.VerifyCredentials(user.getEmail());
+    if(!list.isEmpty()){
+      return HttpStatus.NOT_ACCEPTABLE;
+    }
+
+    Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+    String hash = argon2.hash(1, 1024, 1, user.getPassword());
+     
+
+
     String role = user.getRoleName();
 
     long now = System.currentTimeMillis();
@@ -67,6 +79,7 @@ public class UsersController {
     n = user;
     n.setRole(rol);
     n.setCreated_at(sqlTimestamp);
+    n.setPassword(hash);
 
     if (userRepository.save(n) != null) {
       return HttpStatus.OK;
@@ -186,10 +199,20 @@ public class UsersController {
     Optional<Users> optionaluser = userRepository.findById(idUser);
 
     if (optionaluser.isPresent()) {
+
+      List <Users> list = userRepository.VerifyCredentials(user.getEmail());
+      if(!list.isEmpty()){
+        return null;
+      }
+
+      Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+      String hash = argon2.hash(1, 1024, 1, user.getPassword());
+
+
       Users Users = optionaluser.get();
       String role = user.getRoleName();
       String email = user.getEmail();
-      String password = user.getPassword();
+      String password = hash;
       String name = user.getName();
       String lastName = user.getLastName();
 

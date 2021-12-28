@@ -14,6 +14,8 @@ import apex.ingagers.ecommerce.repository.CategoriesRepository;
 import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
 import apex.ingagers.ecommerce.repository.UserRepository;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 
 @Configuration
 public class LoadDatabase {
@@ -90,7 +92,10 @@ public class LoadDatabase {
 				user.setName("John");
 				user.setLastName("Doe");
 				user.setEmail("john.doe@git.com");
-				user.setPassword("test123");
+				
+				Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+				String hash = argon2.hash(1, 1024, 1, "test123");
+				user.setPassword(hash);
 
 				Roles rol;
     			rol = rolesRepository.findByRolename("Admin");
@@ -106,7 +111,10 @@ public class LoadDatabase {
 				user.setName("Jane");
 				user.setLastName("Doe");
 				user.setEmail("jane.doe@git.com");
-				user.setPassword("test123");
+
+				Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+				String hash = argon2.hash(1, 1024, 1, "test123");
+				user.setPassword(hash);
 
 				Roles rol;
     			rol = rolesRepository.findByRolename("Shopper");
