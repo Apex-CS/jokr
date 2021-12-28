@@ -53,34 +53,44 @@ public class UsersController {
     this.rolesRepository = rolesRepository;
   }
 
-  @PostMapping("/users") // Map ONLY POST Requests
+  @GetMapping("/users")
+  public List<Users> getAllUsers() {
+    return userRepository.findAllUsers();
+  }
+
+  @GetMapping("/users/{id}")
+  public List<Users> getUserbyId(@PathVariable("id") Integer id) {
+    return userRepository.findUserById(id);
+  }
+
+  @PostMapping("/users")
   HttpStatus addNewUser(@RequestBody Users user) {
 
-    List <Users> list = userRepository.VerifyCredentials(user.getEmail());
-    if(!list.isEmpty()){
+    List<Users> list = userRepository.VerifyCredentials(user.getEmail());
+
+    if (!list.isEmpty()) {
       return HttpStatus.NOT_ACCEPTABLE;
     }
 
+    // Create Encripted Password whit ARGON2
     Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
     String hash = argon2.hash(1, 1024, 1, user.getPassword());
-     
 
-
-    String role = user.getRoleName();
-
+    // Create the data time whith the real time
     long now = System.currentTimeMillis();
     Timestamp sqlTimestamp = new Timestamp(now);
 
-    Roles rol;
-    rol = rolesRepository.findByRolename(role);
+    // Find the rol in the db
+    String role = user.getRoleName();
+    Roles rol = rolesRepository.findByRolename(role);
 
-    Users n = new Users();
-    n = user;
-    n.setRole(rol);
-    n.setCreated_at(sqlTimestamp);
-    n.setPassword(hash);
+    Users newUser = new Users();
+    newUser = user;
+    newUser.setRole(rol);
+    newUser.setCreated_at(sqlTimestamp);
+    newUser.setPassword(hash);
 
-    if (userRepository.save(n) != null) {
+    if (userRepository.save(newUser) != null) {
       return HttpStatus.OK;
     } else {
       return HttpStatus.BAD_REQUEST;
@@ -88,7 +98,7 @@ public class UsersController {
 
   }
 
-  @PostMapping("/users/image") // Map ONLY POST Requests
+  @PostMapping("/users/image")
   public Map<String, String> addNewUserImage(@RequestPart MultipartFile file) throws IOException {
 
     HashMap<String, String> map = new HashMap<>();
@@ -130,7 +140,7 @@ public class UsersController {
     map.put("id", photoId);
     map.put("url", photoUrl);
 
-    System.out.println("Holaa");
+    // System.out.println("Holaa");
 
     return map;
 
@@ -155,17 +165,6 @@ public class UsersController {
 
     return map;
 
-  }
-
-  @GetMapping("/users")
-  public List<Users> getAllUsers() {
-    // This returns a JSON or XML with the Users
-    return userRepository.findAllUsers();
-  }
-
-  @GetMapping("/users/{id}")
-  public List<Users> getUserbyId(@PathVariable("id") Integer id) {
-    return userRepository.findUserById(id);
   }
 
   @DeleteMapping("/users/{id}")
@@ -198,38 +197,30 @@ public class UsersController {
 
     if (!optionaluser.isEmpty()) {
 
-      List <Users> list = userRepository.VerifyCredentials(user.getEmail());
-      if(!list.isEmpty()){
+      List<Users> list = userRepository.VerifyCredentials(user.getEmail());
+      if (!list.isEmpty()) {
         return null;
       }
 
       Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
       String hash = argon2.hash(1, 1024, 1, user.getPassword());
 
-
-      Users Users = optionaluser.get(0);
-      String role = user.getRoleName();
-      String email = user.getEmail();
-      String password = hash;
-      String name = user.getName();
-      String lastName = user.getLastName();
-
-      Roles rol;
-      rol = rolesRepository.findByRolename(role);
+      Roles rol = rolesRepository.findByRolename(user.getRoleName());
 
       long now = System.currentTimeMillis();
       Timestamp sqlTimestamp = new Timestamp(now);
 
-      Users.setEmail(email);
-      Users.setPassword(password);
-      Users.setName(name);
-      Users.setLastName(lastName);
+      Users Users = optionaluser.get(0);
+      Users.setEmail(user.getEmail());
+      Users.setLastName(user.getLastName());
+      Users.setName(user.getName());
+      Users.setPassword(hash);
+      Users.setphotoPublicId(user.getphotoPublicId());
+      Users.setphotoUrl(user.getphotoUrl());
       Users.setRole(rol);
       Users.setUpdated_at(sqlTimestamp);
 
-      userRepository.save(Users);
-
-      return Users;
+      return userRepository.save(Users);
     }
     return null;
   }
