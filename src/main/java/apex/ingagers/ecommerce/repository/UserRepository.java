@@ -14,22 +14,13 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
    @Query(value = "SELECT * FROM users WHERE  is_active = 1 and id=?1", nativeQuery = true)
    List<Users> findUserById(Integer id);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-   Optional<Users> findByName(String name);
-=======
-   @Query(value = "SELECT * FROM users WHERE  is_active = 1 and email=?1 and password=?2", nativeQuery = true)
-=======
    @Query(value = "SELECT * FROM users WHERE  is_active = 1  AND email=?1 AND password=?2", nativeQuery = true)
->>>>>>> 7a6be74 (Update method of add image by User)
    List<Users> VerifyCredentials(String email, String password );
-=======
+
    @Query(value = "SELECT * FROM users WHERE  is_active = 1  AND email=?1 ", nativeQuery = true)
    List<Users> VerifyCredentials(String email );
->>>>>>> e3b4afb (Updathe the method put by products)
 
    Users findByName(String name);
->>>>>>> 12bd6f0 (Add basic structure og login)
+
 
 }

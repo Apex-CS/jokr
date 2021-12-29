@@ -6,21 +6,14 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-<<<<<<< HEAD
-import org.springframework.web.multipart.MultipartFile;
-=======
 import io.swagger.annotations.ApiModelProperty;
->>>>>>> 7a6be74 (Update method of add image by User)
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Users {
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< HEAD
-=======
   @ApiModelProperty(hidden = true) 
->>>>>>> 7a6be74 (Update method of add image by User)
   private Integer id;
 
   @Column(nullable = false)
