@@ -3,32 +3,59 @@ package apex.ingagers.ecommerce.model;
 import java.sql.Timestamp;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.annotations.ApiModelProperty;
+
+
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Products {
+
+    // @ApiModelProperty(hidden = true)  --- Para no pedir el dato en swagger pero si devolver en json
+    // @JsonIgnore -- Para no mandar ni mostrar el dato en swagger
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @ApiModelProperty(hidden = true) 
     private Integer id;
+
     @Column(nullable = false)
     private String sku;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String description;
+
     @Column(nullable = false)
     private Float price;
+
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",nullable = false,insertable = false)
+    @ApiModelProperty(hidden = true) 
+    @JsonIgnore
     private boolean  is_active;
+
     @Column(nullable = false)
+    @ApiModelProperty(hidden = true) 
+    @JsonIgnore
     private Timestamp created_at;
-    // @Column(nullable = false)
+
+    @ApiModelProperty(hidden = true) 
+    @JsonIgnore
     private Timestamp updated_at;
-    // @Column(nullable = false)
+
+    @ApiModelProperty(hidden = true) 
+    @JsonIgnore
     private Timestamp delete_at;
+
     @Column(nullable = false)
     private int stock;
+
     @Column
     private String photoUrl;
+    
     @Column
     private String photoPublicId;
 

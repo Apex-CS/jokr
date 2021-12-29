@@ -62,9 +62,9 @@ public class AddressesController {
         a.setUpdated_at(null);
         a.setDelete_at(null);
 
-        Optional<Users> optionalUser = userRepository.findUserById(id_user);
-        if (optionalUser.isPresent()) {
-            Users users = optionalUser.get();
+        List<Users> optionalUser = userRepository.findUserById(id_user);
+        if (!optionalUser.isEmpty()) {
+            Users users = optionalUser.get(0);
             a.setUsers(users);
         }
 

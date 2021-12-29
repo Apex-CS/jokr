@@ -16,5 +16,8 @@ public interface SubCategoriesRepository extends JpaRepository<SubCategories, In
     List<SubCategories> findAllCategories();
 
     @Query(value = "SELECT * FROM sub_categories WHERE  is_active = 1 and id=?1", nativeQuery = true)
-    Optional<SubCategories> findSubCategoriesById(Integer id);
+    List<SubCategories> findSubCategoriesById(Integer id);
+
+    @Query(value = "SELECT * FROM sub_categories WHERE  is_active = 1 and id_category=?1", nativeQuery = true)
+    List<SubCategories> findSubCategoriesByIdCategory(Integer id);
 }

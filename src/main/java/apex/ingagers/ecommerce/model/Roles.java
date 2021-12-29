@@ -6,17 +6,26 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.annotations.ApiModelProperty;
+
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Roles {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @ApiModelProperty(hidden = true) 
     private Integer id;
+    
     private String rolename;
+
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
+    @JsonIgnore @ApiModelProperty(hidden = true) 
     private boolean is_active;
-    @JsonIgnore
+
+    @JsonIgnore @ApiModelProperty(hidden = true) 
     private Timestamp created_at;
-    @JsonIgnore
+
+    @JsonIgnore @ApiModelProperty(hidden = true) 
     private Timestamp updated_at;
 
     public Integer getId() {

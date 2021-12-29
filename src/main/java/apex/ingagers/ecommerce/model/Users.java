@@ -1,22 +1,21 @@
 package apex.ingagers.ecommerce.model;
 
+import java.util.List;
 import java.sql.Timestamp;
 import javax.persistence.*;
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.springframework.web.multipart.MultipartFile;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Users {
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(hidden = true) 
   private Integer id;
+
   @Column(nullable = false)
   private String email;
   @Column(nullable = false)
@@ -25,15 +24,20 @@ public class Users {
   private String name;
   @Column(nullable = false)
   private String lastName;
+
   @Column(nullable = false)
-  @JsonIgnore
+  @JsonIgnore @ApiModelProperty(hidden = true) 
   private Timestamp created_at;
-  @JsonIgnore
+
+  @JsonIgnore @ApiModelProperty(hidden = true) 
   private Timestamp updated_at;
-  @JsonIgnore
+
+  @JsonIgnore @ApiModelProperty(hidden = true) 
   private Timestamp delete_at;
-  @JsonIgnore
+
+  
   @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1", insertable = false)
+  @JsonIgnore @ApiModelProperty(hidden = true) 
   private boolean is_active;
 
   // Foreign Key id_role
