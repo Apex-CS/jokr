@@ -15,20 +15,20 @@ public class Orders {
     private Timestamp created_at;
     private Timestamp updated_at;
 
-    // // Foreign Key
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "id_user")
-    // Users Users;
+    // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
+    Users users;
 
-    // // Foreign Key
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "billing_address")
-    // Addresses billing_address;
+    // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "billing_address", nullable = false)
+    Addresses billing_address;
 
-    // // Foreign Key
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "shipping_address")
-    // Addresses shipping_address;
+    // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address", nullable = false)
+    Addresses shipping_address;
 
     // ----------------- END of Table structure-----------------
 
@@ -80,4 +80,27 @@ public class Orders {
         this.updated_at = updated_at;
     }
 
+    public Users getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Addresses getBilling_address() {
+        return this.billing_address;
+    }
+
+    public void setBilling_address(Addresses billing_address) {
+        this.billing_address = billing_address;
+    }
+
+    public Addresses getShipping_address() {
+        return this.shipping_address;
+    }
+
+    public void setShipping_address(Addresses shipping_address) {
+        this.shipping_address = shipping_address;
+    }
 }

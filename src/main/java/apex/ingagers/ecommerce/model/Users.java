@@ -41,7 +41,7 @@ public class Users {
   private boolean is_active;
 
   // Foreign Key id_role
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_role", nullable = false)
   Roles roles;
 
