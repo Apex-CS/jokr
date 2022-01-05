@@ -1,15 +1,18 @@
 package apex.ingagers.ecommerce.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.sql.Timestamp;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Users {
+public class Users{
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,13 +2,19 @@ package apex.ingagers.ecommerce.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.UserRepository;
+import apex.ingagers.ecommerce.security.JWTUtil;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
@@ -22,19 +28,31 @@ public class AuthController {
     this.userRepository = userRepository;
   }
 
-  @PostMapping("/Auth") // Map ONLY POST Requests
-  public boolean login(@RequestBody Users user) {
+  @Autowired
+  private JWTUtil jwtUtil;
 
+  @PostMapping("/Auth") // Map ONLY POST Requests
+  public ResponseEntity<?> login(@RequestBody Users user) {
     List<Users> list = userRepository.VerifyCredentials(user.getEmail());
 
     if (list.isEmpty()) {
-      return false;
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    String passwordHashed = list.get(0).getPassword();
+    Users userdb = list.get(0);
+    String passwordHashed = userdb.getPassword();
     Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
 
-    return argon2.verify(passwordHashed, user.getPassword());
-  }
+    if (argon2.verify(passwordHashed, user.getPassword())) {
 
+      return ResponseEntity.ok()
+      .header(HttpHeaders.AUTHORIZATION, jwtUtil.create( userdb))
+      .body(userdb);
+
+     
+      //return "OK"
+    }else{
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+  }
 }
