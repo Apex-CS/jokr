@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.Users;
@@ -98,7 +99,7 @@ public class UsersController {
 
   }
 
-  @PostMapping("/users/image")
+  @PostMapping(value = "/users/image" , consumes  = { MediaType . MULTIPART_FORM_DATA_VALUE })
   public Map<String, String> addNewUserImage(@RequestPart MultipartFile file) throws IOException {
 
     HashMap<String, String> map = new HashMap<>();

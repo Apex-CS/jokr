@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,7 @@ public class ImageController {
 
     }
 
-    @PostMapping("/image/{name_folder}") // Map ONLY POST Requests
+    @PostMapping(value = "/image/{name_folder}" , consumes = { MediaType . MULTIPART_FORM_DATA_VALUE }) // Map ONLY POST Requests
     public Map<String, String> addImage(@PathVariable("name_folder") String name_folder,
             @RequestPart MultipartFile file) throws IOException {
 

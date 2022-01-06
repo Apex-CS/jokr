@@ -9,6 +9,8 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +19,12 @@ import org.springframework.stereotype.Component;
 import apex.ingagers.ecommerce.model.Users;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -52,14 +57,21 @@ public class JWTUtil {
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
+        //Put the autorities 
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+				.commaSeparatedStringToAuthorityList(user.getRoleName());
+
         //  set the JWT Claims
         JwtBuilder builder = Jwts.builder()
                                  .setId(String.valueOf(user.getId()))
                                  .setIssuedAt(now)
                                  .setSubject(user.getEmail())
                                  .claim("name", user.getName())
-                                 .claim("rol", user.getRoleName())
                                  .claim("photoUrl", user.getphotoUrl())
+                                 .claim("authorities",
+                                 grantedAuthorities.stream()
+                                         .map(GrantedAuthority::getAuthority)
+                                         .collect(Collectors.toList()))
                                  .setIssuer(issuer)
                                  .signWith(signatureAlgorithm, signingKey);
 
@@ -103,6 +115,10 @@ public class JWTUtil {
 
         return claims.getExpiration();
     }
+
+    public Claims validateAuthorities(String jwt) {
+	 	return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(key)).parseClaimsJws(jwt).getBody();
+	 }
 
     public boolean validate(String token) {
         try {
