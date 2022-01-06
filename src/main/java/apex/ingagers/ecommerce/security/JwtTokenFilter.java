@@ -63,8 +63,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         }
 
-
-        String andamosaqui = "valemadres";
         // Get user identity and set it on the spring security context
         // UserDetails userDetails = userRepository
         //         .findByName(jwtTokenUtil.getUsername(token))

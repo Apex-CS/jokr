@@ -107,29 +107,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/swagger-resources/**").permitAll();
                 // Our public endpoints
                  .antMatchers("/api/v1/public/**").permitAll()
-                //  .antMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
+                 .antMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
                 // .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
                 // .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
                 // .antMatchers(HttpMethod.POST, "/api/book/search").permitAll();
                 // Our private endpoints
-                .anyRequest().authenticated();
+                 .anyRequest().authenticated();
 
         // Add JWT token filter
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     // // Used by spring security if CORS is enabled.
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-        config.addAllowedOrigin(myAllowedApi);
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+    // @Bean
+    // public CorsFilter corsFilter() {
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowCredentials(false);
+    //     config.addAllowedOrigin(myAllowedApi);
+    //     config.addAllowedHeader("*");
+    //     config.addAllowedMethod("*");
+    //     source.registerCorsConfiguration("/**", config);
+    //     return new CorsFilter(source);
+    // }
 
     // // Expose authentication manager bean
     // @Override @Bean

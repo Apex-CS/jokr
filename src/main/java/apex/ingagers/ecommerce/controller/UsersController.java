@@ -94,7 +94,7 @@ public class UsersController {
     newUser.setCreated_at(sqlTimestamp);
     newUser.setPassword(hash);
 
-    if (userRepository.save(newUser) != null) {
+    if (userRepository.save(newUser) != null) { 
       return HttpStatus.OK;
     } else {
       return HttpStatus.BAD_REQUEST;
