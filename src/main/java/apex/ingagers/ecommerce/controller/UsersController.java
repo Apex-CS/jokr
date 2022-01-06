@@ -1,5 +1,10 @@
 package apex.ingagers.ecommerce.controller;
 
+import apex.ingagers.ecommerce.model.Roles;
+import apex.ingagers.ecommerce.model.Users;
+import apex.ingagers.ecommerce.repository.RolesRepository;
+import apex.ingagers.ecommerce.repository.UserRepository;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -9,10 +14,6 @@ import java.util.List;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,20 +30,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import apex.ingagers.ecommerce.model.Roles;
-import apex.ingagers.ecommerce.model.Users;
-import apex.ingagers.ecommerce.repository.RolesRepository;
-import apex.ingagers.ecommerce.repository.UserRepository;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 
 @RestController // This means that this class is a Controller
 @RequestMapping("/api/v1")
 public class UsersController {
 
+  @Value("${cloudinary.credentials.cloud.name}")
+  private String cloud_name;
+  @Value("${cloudinary.credentials.api.key}")
+  private String api_key;
+  @Value("${cloudinary.credentials.api.secret}")
+  private String api_secret;
+  @Value("${cloudinary.credentials.secure}")
+  private boolean secure;
   @Value("${stripe.apikey}")
   String stripeKey;
 
@@ -126,10 +129,11 @@ public class UsersController {
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+      "cloud_name", cloud_name, // "ddlqf2qer",
+      "api_key", api_key, // "941731261856649",
+      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+      "secure", secure));
+
     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "Jokr/usersPhoto/"));
 
     String photoUrl = String.valueOf(uploadResult.get("url"));
@@ -154,10 +158,10 @@ public class UsersController {
     HashMap<String, String> map = new HashMap<>();
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+      "cloud_name", cloud_name, // "ddlqf2qer",
+      "api_key", api_key, // "941731261856649",
+      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+      "secure", secure));
 
     cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 

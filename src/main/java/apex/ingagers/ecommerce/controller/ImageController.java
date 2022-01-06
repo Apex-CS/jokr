@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
@@ -24,6 +25,15 @@ import com.cloudinary.utils.ObjectUtils;
 @RestController
 @RequestMapping("/api/v1")
 public class ImageController {
+
+    @Value("${cloudinary.credentials.cloud.name}")
+    private String cloud_name;
+    @Value("${cloudinary.credentials.api.key}")
+    private String api_key;
+    @Value("${cloudinary.credentials.api.secret}")
+    private String api_secret;
+    @Value("${cloudinary.credentials.secure}")
+    private boolean secure;
 
     @DeleteMapping("/image/{id_image}")
     public Map<String, String> deleteImage(@PathVariable("id_image") String id_image,
@@ -33,10 +43,10 @@ public class ImageController {
         HashMap<String, String> map = new HashMap<>();
 
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-                "api_key", "679976426528739", // "941731261856649",
-                "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-                "secure", true));
+                "cloud_name", cloud_name, // "ddlqf2qer",
+                "api_key", api_key, // "941731261856649",
+                "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+                "secure", secure));
 
         cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 
@@ -75,10 +85,11 @@ public class ImageController {
         }
 
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dpakhjsmh", // ddlqf2qer
-                "api_key", "679976426528739", // "941731261856649",
-                "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-                "secure", true));
+                "cloud_name", cloud_name, // "ddlqf2qer",
+                "api_key", api_key, // "941731261856649",
+                "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+                "secure", secure));
+
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                 ObjectUtils.asMap("folder", "Jokr/" + name_folder + "/"));
 
