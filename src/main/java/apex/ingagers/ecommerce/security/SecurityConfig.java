@@ -2,25 +2,16 @@ package apex.ingagers.ecommerce.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
-
-import apex.ingagers.ecommerce.repository.UserRepository;
 
 import static java.lang.String.format;
 
@@ -35,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    
-    private final UserRepository userRepository;
     private final JwtTokenFilter jwtTokenFilter;
 
     @Value("${cors.allowed-api}")
@@ -46,34 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String swaggerPath;
 
 
-    public SecurityConfig( UserRepository userRepository,JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig( JwtTokenFilter jwtTokenFilter) {
         super();
 
-
-        this.userRepository = userRepository;
         this.jwtTokenFilter = jwtTokenFilter;
 
         // Inherit security context in async function calls
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
-
-
-
-    // @Override
-    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //     // auth.userDetailsService(username -> userRepository
-    //     //         .findByName(username)
-    //     //         .orElseThrow(
-    //     //                 () -> new UsernameNotFoundException(
-    //     //                         format("User: %s, not found", username)
-    //     //                 )
-    //     //         ));
-
-    //     auth.inMemoryAuthentication()
-    //     .withUser("user1").password("123").roles("APPRENTICE")
-    //     .and()
-    //     .withUser("user2").password("123").roles("SENSEI");
-    // }
 
 
     @Bean
@@ -109,38 +79,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                  .antMatchers("/").permitAll()
                  .antMatchers(format("%s/**", restApiDocPath)).permitAll()
                  .antMatchers(format("%s/**", swaggerPath)).permitAll()
-                //.antMatchers("/swagger-resources/**").permitAll();
                 // Our public endpoints
                  .antMatchers("/api/v1/public/**").permitAll()
-                 .antMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                 .antMatchers("/api/v1/users").permitAll()
-                // .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
-                // .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
-                // .antMatchers(HttpMethod.POST, "/api/book/search").permitAll();
                 // Our private endpoints
-                 .anyRequest().authenticated();
+                .anyRequest().authenticated();
 
         // Add JWT token filter
          http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-    // // Used by spring security if CORS is enabled.
-    // @Bean
-    // public CorsFilter corsFilter() {
-    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //     CorsConfiguration config = new CorsConfiguration();
-    //     config.setAllowCredentials(false);
-    //     config.addAllowedOrigin(myAllowedApi);
-    //     config.addAllowedHeader("*");
-    //     config.addAllowedMethod("*");
-    //     source.registerCorsConfiguration("/**", config);
-    //     return new CorsFilter(source);
-    // }
-
-    // // Expose authentication manager bean
-    // @Override @Bean
-    // public AuthenticationManager authenticationManagerBean() throws Exception {
-    //     return super.authenticationManagerBean();
-    // }
+// // Used by spring security if CORS is enabled.
 
 }

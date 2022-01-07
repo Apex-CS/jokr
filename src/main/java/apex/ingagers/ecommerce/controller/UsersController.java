@@ -29,10 +29,10 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
-
 
 @RestController // This means that this class is a Controller
 @RequestMapping("/api/v1")
@@ -68,7 +68,7 @@ public class UsersController {
   }
 
   @PostMapping("/users")
-  HttpStatus addNewUser(@RequestBody Users user) {
+  public HttpStatus addNewUser(@RequestBody Users user) {
 
     List<Users> list = userRepository.VerifyCredentials(user.getEmail());
 
@@ -85,8 +85,7 @@ public class UsersController {
     Timestamp sqlTimestamp = new Timestamp(now);
 
     // Find the rol in the db
-    String role = user.getRoleName();
-    Roles rol = rolesRepository.findByRolename(role);
+    Roles rol = rolesRepository.findByRolename(user.getRoleName());
 
     Users newUser = new Users();
     newUser = user;
@@ -94,7 +93,7 @@ public class UsersController {
     newUser.setCreated_at(sqlTimestamp);
     newUser.setPassword(hash);
 
-    if (userRepository.save(newUser) != null) { 
+    if (userRepository.save(newUser) != null) {
       return HttpStatus.OK;
     } else {
       return HttpStatus.BAD_REQUEST;
@@ -102,7 +101,7 @@ public class UsersController {
 
   }
 
-  @PostMapping(value = "/users/image" , consumes  = { MediaType . MULTIPART_FORM_DATA_VALUE })
+  @PostMapping(value = "/users/image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
   public Map<String, String> addNewUserImage(@RequestPart MultipartFile file) throws IOException {
 
     HashMap<String, String> map = new HashMap<>();
@@ -129,10 +128,10 @@ public class UsersController {
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-      "cloud_name", cloud_name, // "ddlqf2qer",
-      "api_key", api_key, // "941731261856649",
-      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-      "secure", secure));
+        "cloud_name", cloud_name, // "ddlqf2qer",
+        "api_key", api_key, // "941731261856649",
+        "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", secure));
 
     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "Jokr/usersPhoto/"));
 
@@ -158,10 +157,10 @@ public class UsersController {
     HashMap<String, String> map = new HashMap<>();
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-      "cloud_name", cloud_name, // "ddlqf2qer",
-      "api_key", api_key, // "941731261856649",
-      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-      "secure", secure));
+        "cloud_name", cloud_name, // "ddlqf2qer",
+        "api_key", api_key, // "941731261856649",
+        "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", secure));
 
     cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 
@@ -196,19 +195,11 @@ public class UsersController {
   }
 
   @PutMapping("/users/{id}")
-  public Users updateUser(@PathVariable("id") Integer id, @RequestBody Users user) {
+  public ResponseEntity<?> updateUser(@PathVariable("id") Integer id, @RequestBody Users user) {
 
     List<Users> optionaluser = userRepository.findUserById(id);
 
     if (!optionaluser.isEmpty()) {
-
-      List<Users> list = userRepository.VerifyCredentials(user.getEmail());
-      if (!list.isEmpty()) {
-        return null;
-      }
-
-      Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-      String hash = argon2.hash(1, 1024, 1, user.getPassword());
 
       Roles rol = rolesRepository.findByRolename(user.getRoleName());
 
@@ -219,14 +210,22 @@ public class UsersController {
       Users.setEmail(user.getEmail());
       Users.setLastName(user.getLastName());
       Users.setName(user.getName());
-      Users.setPassword(hash);
       Users.setphotoPublicId(user.getphotoPublicId());
       Users.setphotoUrl(user.getphotoUrl());
       Users.setRole(rol);
       Users.setUpdated_at(sqlTimestamp);
 
-      return userRepository.save(Users);
+      if (user.getPassword() != null || user.getPassword() != "") {
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        String hash = argon2.hash(1, 1024, 1, user.getPassword());
+        Users.setPassword(hash);
+      }
+      if (userRepository.save(Users) != null) {
+        return ResponseEntity.ok().body(Users);
+      } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+      }
     }
-    return null;
+    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
   }
 }

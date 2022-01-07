@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class ProductsController {
     this.subCategoriesRepository = subCategoriesRepository;
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @PostMapping(value = "/products/image", consumes  = { MediaType . MULTIPART_FORM_DATA_VALUE }) // Map ONLY POST Requests
   public Map<String, String> addImageProducts(@RequestPart MultipartFile file) throws IOException {
 
@@ -100,6 +102,7 @@ public class ProductsController {
     return map;
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @DeleteMapping("/products/image/{id_image}")
   public Map<String, String> deleteImage(@PathVariable("id_image") String id_image) throws IOException {
 
@@ -122,6 +125,7 @@ public class ProductsController {
 
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @PostMapping("/products") // Map ONLY POST Requests
   HttpStatus addProducts(@RequestBody Products product) {
 
@@ -151,12 +155,13 @@ public class ProductsController {
     return productsRepository.findAllProducts();
   }
 
-  @ApiOperation(value = "Finds Contacts by id", notes = "")
+ 
   @GetMapping("/products/{id}")
   public List<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @DeleteMapping("/products/{id}")
   public boolean deleteProduct(@PathVariable("id") Integer id) {
     List<Products> optionalproducts = productsRepository.findProductsById(id);
@@ -178,6 +183,7 @@ public class ProductsController {
     }
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @PutMapping("/products/{id}")
   public Products updateProduct(@PathVariable("id") Integer id, @RequestBody Products product) {
 

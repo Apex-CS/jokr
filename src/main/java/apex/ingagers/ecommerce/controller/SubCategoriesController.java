@@ -20,7 +20,7 @@ public class SubCategoriesController {
     SubCategoriesController(SubCategoriesRepository subCategoriesRepository) {
         this.subCategoriesRepository = subCategoriesRepository;
     }
-    @PreAuthorize("hasAuthority ('Shopper')")
+    
     @GetMapping("/subcategories")
     public List<SubCategories> getAllSubcategories() {
         return subCategoriesRepository.findAll();

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import apex.ingagers.ecommerce.model.Users;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
