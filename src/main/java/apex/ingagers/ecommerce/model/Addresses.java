@@ -32,11 +32,19 @@ public class Addresses {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Timestamp delete_at;
+    // * Default billing and shipping address columns
+    // * Only 1 shipping and 1 billing should be true for each user
+    @Column(columnDefinition = "TINYINT(1)",nullable = false)
+    private boolean default_billing_address;
+    @Column(columnDefinition = "TINYINT(1)",nullable = false)
+    private boolean default_shipping_address;
 
     //Foreign Key id_user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     private Users users;
+
+    //----------------- END of Table structure-----------------
 
     public Users getUsers() {
         return this.users;
@@ -45,16 +53,6 @@ public class Addresses {
     public void setUsers(Users users) {
         this.users = users;
     }
-
-    // //FK relation with Orders 
-    // @OneToMany(mappedBy = "billing_address")
-    // List<Orders> billing_address;
-
-    // //FK relation with Orders 
-    // @OneToMany(mappedBy = "shipping_address")x
-    // List<Orders> shipping_address;
-
-    //----------------- END of Table structure-----------------
 
     public Integer getId() {
         return this.id;
