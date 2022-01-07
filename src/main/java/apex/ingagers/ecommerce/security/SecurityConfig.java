@@ -27,6 +27,11 @@ import static java.lang.String.format;
 import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+    securedEnabled = true,
+    jsr250Enabled = true,
+    prePostEnabled = true
+)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    
@@ -108,6 +113,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Our public endpoints
                  .antMatchers("/api/v1/public/**").permitAll()
                  .antMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
+                 .antMatchers("/api/v1/users").permitAll()
                 // .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
                 // .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
                 // .antMatchers(HttpMethod.POST, "/api/book/search").permitAll();

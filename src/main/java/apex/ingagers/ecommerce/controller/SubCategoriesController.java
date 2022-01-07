@@ -2,6 +2,7 @@ package apex.ingagers.ecommerce.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class SubCategoriesController {
     SubCategoriesController(SubCategoriesRepository subCategoriesRepository) {
         this.subCategoriesRepository = subCategoriesRepository;
     }
-
+    @PreAuthorize("hasAuthority ('Shopper')")
     @GetMapping("/subcategories")
     public List<SubCategories> getAllSubcategories() {
         return subCategoriesRepository.findAll();

@@ -59,8 +59,8 @@ public class JWTUtil {
 
         //Put the autorities 
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				// .commaSeparatedStringToAuthorityList(user.getRoleName());
-                .commaSeparatedStringToAuthorityList("Admin");
+				.commaSeparatedStringToAuthorityList(user.getRoleName());
+                //.commaSeparatedStringToAuthorityList("Admin");
 
         //  set the JWT Claims
         JwtBuilder builder = Jwts.builder()
