@@ -15,6 +15,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Addresses {
 
