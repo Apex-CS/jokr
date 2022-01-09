@@ -5,11 +5,21 @@ import java.util.Optional;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class Addresses {
+
+    // @ApiModelProperty(hidden = true)  --- Para no pedir el dato en swagger pero si devolver en json
+    // @JsonIgnore -- Para no mandar ni mostrar el dato en swagger
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @ApiModelProperty(hidden = true)
     private Integer id;
+    
     @Column(nullable = false)
     private String street1;
     private String street2;
@@ -26,11 +36,17 @@ public class Addresses {
     private String phone;
     @Column(nullable = false)
     private String client_name;
+
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false,nullable = false)
+    @ApiModelProperty(hidden = true) @JsonIgnore
     private boolean is_active;
+
     @Column(nullable = false)
+    @ApiModelProperty(hidden = true) @JsonIgnore
     private Timestamp created_at;
+    @ApiModelProperty(hidden = true) @JsonIgnore
     private Timestamp updated_at;
+    @ApiModelProperty(hidden = true) @JsonIgnore
     private Timestamp delete_at;
     // * Default billing and shipping address columns
     // * Only 1 shipping and 1 billing should be true for each user
