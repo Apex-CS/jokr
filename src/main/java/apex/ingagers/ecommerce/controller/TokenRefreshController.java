@@ -49,8 +49,7 @@ public class TokenRefreshController {
             if (!optionalUser.isEmpty()) {
                 Users Users = optionalUser.get(0);
                 if (Users.getIs_active() == true) {
-                    return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.create(Users))
-                            .body("Bearer " + jwtUtil.create(Users));
+                    return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.create(Users)).body("");
                 } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 

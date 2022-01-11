@@ -53,7 +53,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.create(userdb))
-            .body("Bearer " + jwtUtil.create(userdb));
+            .body("");
       } else {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
