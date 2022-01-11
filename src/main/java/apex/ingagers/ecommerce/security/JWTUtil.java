@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import apex.ingagers.ecommerce.model.Users;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.management.relation.Role;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
@@ -35,8 +36,11 @@ public class JWTUtil {
     @Value("${security.jwt.issuer}")
     private String issuer;
 
-    @Value("${security.jwt.ttlMillis}")
-    private long ttlMillis;
+    @Value("${security.jwt.ttlMillis.admin}")
+    private long ttlMillisAdmin;
+
+    @Value("${security.jwt.ttlMillis.shopper}")
+    private long ttlMillisShopper;
 
     private final Logger logger = LoggerFactory
             .getLogger(JWTUtil.class);
@@ -75,8 +79,17 @@ public class JWTUtil {
                                  .setIssuer(issuer)
                                  .signWith(signatureAlgorithm, signingKey);
 
-        if (ttlMillis >= 0) {
-            long expMillis = nowMillis + ttlMillis;
+
+
+        String userRoleName = user.getRole().getrolename();
+        if (ttlMillisShopper >= 0 &&  userRoleName.equals("Shopper") == true) {
+            long expMillis = nowMillis + ttlMillisShopper;
+            Date exp = new Date(expMillis);
+            builder.setExpiration(exp);
+        }
+
+        if (ttlMillisAdmin >= 0 &&  userRoleName.equals("Admin") == true) {
+            long expMillis = nowMillis + ttlMillisAdmin;
             Date exp = new Date(expMillis);
             builder.setExpiration(exp);
         }
@@ -94,6 +107,17 @@ public class JWTUtil {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public String getIdUser(String jwt) {
+        // This line will throw an exception if it is not a signed JWS (as
+        // expected)
+        Claims claims = Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(key))
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        return claims.getId();
     }
 
     public String getKey(String jwt) {
