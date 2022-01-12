@@ -90,7 +90,7 @@ public class AddressesController {
             newaddresses.setCountry(addresses.getCountry());
             newaddresses.setPostal_code(addresses.getPostal_code());
             newaddresses.setPhone(addresses.getPhone());
-            // newaddresses.setClient_name();
+            newaddresses.setRecipient_name(addresses.getRecipient_name());
 
             long now = System.currentTimeMillis();
             Timestamp sqlTimestamp = new Timestamp(now);
