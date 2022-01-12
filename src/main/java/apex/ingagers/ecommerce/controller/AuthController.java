@@ -51,9 +51,8 @@ public class AuthController {
 
       if (argon2.verify(passwordHashed, user.getPassword())) {
 
-        return ResponseEntity.ok()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.create(userdb))
-            .body("");
+        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, jwtUtil.create(userdb)).body("");
+            // .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtil.create(userdb)).body("");
       } else {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
