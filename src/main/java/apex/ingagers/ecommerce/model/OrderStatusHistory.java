@@ -2,6 +2,7 @@ package apex.ingagers.ecommerce.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ public class OrderStatusHistory {
    @MapsId("id_status")
    private OrderStatuses status;
 
+   @Column(nullable = false)
    private Timestamp created_at;
    private Timestamp updated_at;
    // End of table structure
