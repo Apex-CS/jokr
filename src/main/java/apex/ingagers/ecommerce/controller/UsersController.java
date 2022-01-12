@@ -2,18 +2,16 @@ package apex.ingagers.ecommerce.controller;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 
 import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.Users;
@@ -34,9 +30,6 @@ import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.UserRepository;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
-
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 
 @RestController // This means that this class is a Controller
 @RequestMapping("/api/v1")

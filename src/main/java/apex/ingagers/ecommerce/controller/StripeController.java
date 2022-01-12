@@ -1,12 +1,8 @@
 package apex.ingagers.ecommerce.controller;
 
-import apex.ingagers.ecommerce.model.Users;
-import apex.ingagers.ecommerce.repository.UserRepository;
-
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.List;
+import java.util.Map;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -17,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import apex.ingagers.ecommerce.model.Users;
+import apex.ingagers.ecommerce.repository.UserRepository;
 
 
 @RestController
