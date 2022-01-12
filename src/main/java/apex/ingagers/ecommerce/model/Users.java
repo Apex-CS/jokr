@@ -13,7 +13,6 @@ public class Users {
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @ApiModelProperty(hidden = true) 
   private Integer id;
 
   @Column(nullable = false)

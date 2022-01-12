@@ -6,9 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
@@ -33,7 +30,7 @@ public class OrderProduct {
    private int quantity;
    @Column(nullable = false)
    private float price;
-   //? Should this column below exist?
+   // * This column saves the original name of the product at the time of purchase (in case the name is changed later)
    @Column(nullable = false)
    private String name;
    // End of table structure
@@ -52,6 +49,30 @@ public class OrderProduct {
 
    public void setProducts(Products products) {
       this.products = products;
+   }
+
+   public int getQuantity() {
+      return this.quantity;
+   }
+
+   public void setQuantity(int quantity) {
+      this.quantity = quantity;
+   }
+
+   public float getPrice() {
+      return this.price;
+   }
+
+   public void setPrice(float price) {
+      this.price = price;
+   }
+
+   public String getName() {
+      return this.name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
    }
    
    @Embeddable

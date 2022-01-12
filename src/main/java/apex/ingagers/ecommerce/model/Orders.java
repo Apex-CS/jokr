@@ -9,7 +9,7 @@ public class Orders {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     private float total_cost;
-    private int status;
+
     @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
     private boolean  is_active; 
     private Timestamp created_at;
@@ -46,14 +46,6 @@ public class Orders {
 
     public void setTotal_cost(float total_cost) {
         this.total_cost = total_cost;
-    }
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public boolean getIs_active() {
