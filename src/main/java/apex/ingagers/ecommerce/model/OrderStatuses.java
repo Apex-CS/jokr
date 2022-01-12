@@ -16,7 +16,8 @@ public class OrderStatuses {
     @ApiModelProperty(hidden = true) 
     private Integer id;
     
-    private String status_name;
+    @Column(nullable = false)
+    private String statusname;
     private String description;
 
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)
@@ -38,11 +39,11 @@ public class OrderStatuses {
     }
 
     public String getStatus_ename() {
-        return this.status_name;
+        return this.statusname;
     }
 
-    public void setStatus_name(String status_name) {
-        this.status_name = status_name;
+    public void setStatus_name(String statusname) {
+        this.statusname = statusname;
     }
 
     public String getDescription() {

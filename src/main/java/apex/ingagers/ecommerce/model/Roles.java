@@ -16,6 +16,7 @@ public class Roles {
     @ApiModelProperty(hidden = true) 
     private Integer id;
     
+    @Column(nullable = false)
     private String rolename;
 
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false)

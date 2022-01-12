@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import apex.ingagers.ecommerce.model.Categories;
+import apex.ingagers.ecommerce.model.OrderStatuses;
 import apex.ingagers.ecommerce.model.Roles;
 import apex.ingagers.ecommerce.model.SubCategories;
 import apex.ingagers.ecommerce.model.Users;
 import apex.ingagers.ecommerce.repository.CategoriesRepository;
+import apex.ingagers.ecommerce.repository.OrderStatusesRepository;
 import apex.ingagers.ecommerce.repository.RolesRepository;
 import apex.ingagers.ecommerce.repository.SubCategoriesRepository;
 import apex.ingagers.ecommerce.repository.UserRepository;
@@ -21,7 +23,7 @@ import de.mkammerer.argon2.Argon2Factory;
 public class LoadDatabase {
 	@Bean
 	CommandLineRunner loadData(SubCategoriesRepository subCategoriesRepository,
-			CategoriesRepository categoriesRepository,RolesRepository rolesRepository, UserRepository userRepository) {
+			CategoriesRepository categoriesRepository,RolesRepository rolesRepository, UserRepository userRepository, OrderStatusesRepository orderStatusesRepository) {
 		return (args) -> {
 
 			String[][] categoriesAndSubcategories = {
@@ -124,6 +126,26 @@ public class LoadDatabase {
 				user.setDelete_at(null);
 				user.setUpdated_at(null);
 				userRepository.save(user);
+			}
+
+			String[] statuses_name = { "Awaiting Payment", "Shipped", "Completed" };
+			String[] statuses_description = {"Order petition has been received, still waiting for payment confirmation",
+											"Package has been fulfilled and it is on the way",
+											"Customer has received the package"};
+			int statusNamesLenght = statuses_name.length;
+
+			for (Integer i=0;i<statusNamesLenght;i++) {
+				String status_name = statuses_name[i];
+				String status_description = statuses_description[i];
+				if (orderStatusesRepository.findByStatusname(status_name) == null) {
+					
+					OrderStatuses order_status = new OrderStatuses();
+					order_status.setStatus_name(status_name);
+					order_status.setDescription(status_description);
+					order_status.setCreated_at(sqlTimestamp);
+					order_status.setUpdated_at(null);
+					orderStatusesRepository.save(order_status);
+				}
 			}
 			
 		};
