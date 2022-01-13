@@ -17,4 +17,12 @@ public interface AddressesRepository extends JpaRepository<Addresses, Integer> {
     //TODO: Modificar para consultar todos los Addresses de un determinado usuario
     @Query(value = "SELECT * FROM addresses WHERE is_active = 1 and id_user=?1", nativeQuery = true)
     List<Addresses> findAddressesByUserId(Integer id_user);
+
+        //TODO: Modificar para consultar todos los Addresses de un determinado usuario
+        @Query(value = "SELECT * FROM addresses WHERE is_active = 1 and id_user=?1 and default_billing_address=1", nativeQuery = true)
+        List<Addresses> findBAddressesByUserId(Integer id_user);
+
+            //TODO: Modificar para consultar todos los Addresses de un determinado usuario
+    @Query(value = "SELECT * FROM addresses WHERE is_active = 1 and id_user=?1 and default_shipping_address=1", nativeQuery = true)
+    List<Addresses> findSAddressesByUserId(Integer id_user);
 }
