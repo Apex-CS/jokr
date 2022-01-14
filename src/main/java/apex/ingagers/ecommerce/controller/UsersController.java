@@ -1,5 +1,10 @@
 package apex.ingagers.ecommerce.controller;
 
+import apex.ingagers.ecommerce.model.Roles;
+import apex.ingagers.ecommerce.model.Users;
+import apex.ingagers.ecommerce.repository.RolesRepository;
+import apex.ingagers.ecommerce.repository.UserRepository;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -9,10 +14,6 @@ import java.util.List;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,21 +28,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
-import apex.ingagers.ecommerce.model.Roles;
-import apex.ingagers.ecommerce.model.Users;
-import apex.ingagers.ecommerce.repository.RolesRepository;
-import apex.ingagers.ecommerce.repository.UserRepository;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
-
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 
 @RestController // This means that this class is a Controller
 @RequestMapping("/api/v1")
 public class UsersController {
 
+  @Value("${cloudinary.credentials.cloud.name}")
+  private String cloud_name;
+  @Value("${cloudinary.credentials.api.key}")
+  private String api_key;
+  @Value("${cloudinary.credentials.api.secret}")
+  private String api_secret;
+  @Value("${cloudinary.credentials.secure}")
+  private boolean secure;
   @Value("${stripe.apikey}")
   String stripeKey;
 
@@ -64,7 +68,7 @@ public class UsersController {
   }
 
   @PostMapping("/users")
-  HttpStatus addNewUser(@RequestBody Users user) {
+  public HttpStatus addNewUser(@RequestBody Users user) {
 
     List<Users> list = userRepository.VerifyCredentials(user.getEmail());
 
@@ -81,8 +85,7 @@ public class UsersController {
     Timestamp sqlTimestamp = new Timestamp(now);
 
     // Find the rol in the db
-    String role = user.getRoleName();
-    Roles rol = rolesRepository.findByRolename(role);
+    Roles rol = rolesRepository.findByRolename(user.getRoleName());
 
     Users newUser = new Users();
     newUser = user;
@@ -98,7 +101,7 @@ public class UsersController {
 
   }
 
-  @PostMapping("/users/image")
+  @PostMapping(value = "/users/image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
   public Map<String, String> addNewUserImage(@RequestPart MultipartFile file) throws IOException {
 
     HashMap<String, String> map = new HashMap<>();
@@ -125,10 +128,11 @@ public class UsersController {
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+        "cloud_name", cloud_name, // "ddlqf2qer",
+        "api_key", api_key, // "941731261856649",
+        "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", secure));
+
     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "Jokr/usersPhoto/"));
 
     String photoUrl = String.valueOf(uploadResult.get("url"));
@@ -153,10 +157,10 @@ public class UsersController {
     HashMap<String, String> map = new HashMap<>();
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+        "cloud_name", cloud_name, // "ddlqf2qer",
+        "api_key", api_key, // "941731261856649",
+        "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+        "secure", secure));
 
     cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 
@@ -191,19 +195,11 @@ public class UsersController {
   }
 
   @PutMapping("/users/{id}")
-  public Users updateUser(@PathVariable("id") Integer id, @RequestBody Users user) {
+  public ResponseEntity<?> updateUser(@PathVariable("id") Integer id, @RequestBody Users user) {
 
     List<Users> optionaluser = userRepository.findUserById(id);
 
     if (!optionaluser.isEmpty()) {
-
-      List<Users> list = userRepository.VerifyCredentials(user.getEmail());
-      if (!list.isEmpty()) {
-        return null;
-      }
-
-      Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-      String hash = argon2.hash(1, 1024, 1, user.getPassword());
 
       Roles rol = rolesRepository.findByRolename(user.getRoleName());
 
@@ -214,14 +210,22 @@ public class UsersController {
       Users.setEmail(user.getEmail());
       Users.setLastName(user.getLastName());
       Users.setName(user.getName());
-      Users.setPassword(hash);
       Users.setphotoPublicId(user.getphotoPublicId());
       Users.setphotoUrl(user.getphotoUrl());
       Users.setRole(rol);
       Users.setUpdated_at(sqlTimestamp);
 
-      return userRepository.save(Users);
+      if (user.getPassword() != null || user.getPassword() != "") {
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        String hash = argon2.hash(1, 1024, 1, user.getPassword());
+        Users.setPassword(hash);
+      }
+      if (userRepository.save(Users) != null) {
+        return ResponseEntity.ok().body(Users);
+      } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+      }
     }
-    return null;
+    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
   }
 }

@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 
 
 @Entity // This tells Hibernate to make a table out of this class
+@Setter @Getter
 public class Products {
 
     // @ApiModelProperty(hidden = true)  --- Para no pedir el dato en swagger pero si devolver en json

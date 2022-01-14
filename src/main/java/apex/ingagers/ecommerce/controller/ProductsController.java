@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Value;
 
 import apex.ingagers.ecommerce.model.Products;
 import apex.ingagers.ecommerce.model.SubCategories;
@@ -34,6 +37,15 @@ import com.cloudinary.utils.ObjectUtils;
 @RequestMapping("/api/v1")
 public class ProductsController {
 
+  @Value("${cloudinary.credentials.cloud.name}")
+  private String cloud_name;
+  @Value("${cloudinary.credentials.api.key}")
+  private String api_key;
+  @Value("${cloudinary.credentials.api.secret}")
+  private String api_secret;
+  @Value("${cloudinary.credentials.secure}")
+  private boolean secure;
+
   private final ProductsRepository productsRepository;
   private final SubCategoriesRepository subCategoriesRepository;
 
@@ -42,7 +54,8 @@ public class ProductsController {
     this.subCategoriesRepository = subCategoriesRepository;
   }
 
-  @PostMapping("/products/image") // Map ONLY POST Requests
+  @PreAuthorize("hasAuthority ('Admin')")
+  @PostMapping(value = "/products/image", consumes  = { MediaType . MULTIPART_FORM_DATA_VALUE }) // Map ONLY POST Requests
   public Map<String, String> addImageProducts(@RequestPart MultipartFile file) throws IOException {
 
     HashMap<String, String> map = new HashMap<>();
@@ -69,10 +82,11 @@ public class ProductsController {
     }
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // ddlqf2qer
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+      "cloud_name", cloud_name, // "ddlqf2qer",
+      "api_key", api_key, // "941731261856649",
+      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+      "secure", secure));
+
     Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
         ObjectUtils.asMap("folder", "Jokr/productsPhoto/"));
 
@@ -88,6 +102,7 @@ public class ProductsController {
     return map;
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @DeleteMapping("/products/image/{id_image}")
   public Map<String, String> deleteImage(@PathVariable("id_image") String id_image) throws IOException {
 
@@ -95,10 +110,11 @@ public class ProductsController {
     HashMap<String, String> map = new HashMap<>();
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-        "cloud_name", "dpakhjsmh", // "ddlqf2qer",
-        "api_key", "679976426528739", // "941731261856649",
-        "api_secret", "a4vooY53qGsobBvJAU4i4Jf5__A", // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
-        "secure", true));
+      "cloud_name", cloud_name, // "ddlqf2qer",
+      "api_key", api_key, // "941731261856649",
+      "api_secret", api_secret, // "Eq9Xyx0QkGqtsHO--0GRH8b4NaQ",
+      "secure", secure));
+
 
     cloudinary.uploader().destroy(idImage, ObjectUtils.asMap("overwrite", "true", "public_id", idImage));
 
@@ -109,6 +125,7 @@ public class ProductsController {
 
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @PostMapping("/products") // Map ONLY POST Requests
   HttpStatus addProducts(@RequestBody Products product) {
 
@@ -138,12 +155,13 @@ public class ProductsController {
     return productsRepository.findAllProducts();
   }
 
-  @ApiOperation(value = "Finds Contacts by id", notes = "")
+ 
   @GetMapping("/products/{id}")
   public List<Products> getProductbyId(@PathVariable("id") Integer id) {
     return productsRepository.findProductsById(id);
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @DeleteMapping("/products/{id}")
   public boolean deleteProduct(@PathVariable("id") Integer id) {
     List<Products> optionalproducts = productsRepository.findProductsById(id);
@@ -165,6 +183,7 @@ public class ProductsController {
     }
   }
 
+  @PreAuthorize("hasAuthority ('Admin')")
   @PutMapping("/products/{id}")
   public Products updateProduct(@PathVariable("id") Integer id, @RequestBody Products product) {
 
