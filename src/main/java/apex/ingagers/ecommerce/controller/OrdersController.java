@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,8 @@ public class OrdersController {
         this.productsRepository = productsRepository;
         this.orderProductRepository = orderProductRepository;
     }
-
+    
+    @PreAuthorize("hasAuthority ('Shopper')")
     @PostMapping("/Orders")
     HttpStatus createOrder(@RequestBody Map<String, Object> values) {
 
@@ -128,6 +130,28 @@ public class OrdersController {
     public List<Object> getOrdersByUserId(@PathVariable("id_user") Integer id_user) {
         List<Orders> orders = ordersRepository.findOrdersByUserId(id_user);
 
+        List<Object> ordersFinal = new ArrayList<>();
+
+        for (Orders order : orders) {
+            ordersFinal.add(order);
+            Integer order_id = order.getId();
+            List<OrderProduct> productOrders = orderProductRepository.findOrderProductsByOrderId(order_id);
+
+            for (OrderProduct orderProduct : productOrders) {
+
+                ordersFinal.add("Quantity: " + orderProduct.getQuantity());
+                ordersFinal.add(orderProduct.getProducts());
+            }
+
+        }
+
+        return ordersFinal;
+    }
+    @PreAuthorize("hasAuthority ('Admin')")
+    @GetMapping("/Orders/")
+    public List<Object> getAllOrders() {
+        List<Orders> orders = ordersRepository.findAll();
+        
         List<Object> ordersFinal = new ArrayList<>();
 
         for (Orders order : orders) {
