@@ -1,9 +1,19 @@
 package apex.ingagers.ecommerce.model;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.annotations.ApiModelProperty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,7 +45,7 @@ public class Addresses {
     @Column(nullable = false)
     private String phone;
     @Column(nullable = false)
-    private String client_name;
+    private String recipient_name;
 
     @Column(name = "is_active", columnDefinition = "TINYINT(1) DEFAULT 1",insertable = false,nullable = false)
     @ApiModelProperty(hidden = true) @JsonIgnore
@@ -50,17 +60,17 @@ public class Addresses {
     private Timestamp delete_at;
     // * Default billing and shipping address columns
     // * Only 1 shipping and 1 billing should be true for each user
-    @Column(columnDefinition = "TINYINT(1)",nullable = false)
-    private boolean default_billing_address;
-    @Column(columnDefinition = "TINYINT(1)",nullable = false)
-    private boolean default_shipping_address;
+    @Column(columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+    private boolean is_default_billing_address;
+    @Column(columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+    private boolean is_default_shipping_address;
 
     //Foreign Key id_user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
     private Users users;
 
-    //----------------- END of Table structure-----------------
+    //----------------- END of Table structure -----------------
 
     public Users getUsers() {
         return this.users;
@@ -142,12 +152,12 @@ public class Addresses {
         this.phone = phone;
     }
 
-    public String getClient_name() {
-        return this.client_name;
+    public String getRecipient_name() {
+        return this.recipient_name;
     }
 
-    public void setClient_name(String client_name) {
-        this.client_name = client_name;
+    public void setRecipient_name(String recipient_name) {
+        this.recipient_name = recipient_name;
     }
 
     public boolean getIs_active() {
@@ -182,4 +192,20 @@ public class Addresses {
         this.delete_at = delete_at;
     }
 
+    public boolean isIs_default_billing_address() {
+        return this.is_default_billing_address;
+    }
+
+    public void setIs_default_billing_address(boolean is_default_billing_address) {
+        this.is_default_billing_address = is_default_billing_address;
+    }
+
+    public boolean isIs_default_shipping_address() {
+        return this.is_default_shipping_address;
+    }
+
+    public void setIs_default_shipping_address(boolean is_default_shipping_address) {
+        this.is_default_shipping_address = is_default_shipping_address;
+    }
+ 
 }
