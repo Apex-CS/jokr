@@ -2,9 +2,12 @@ package apex.ingagers.ecommerce.controller;
 
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +17,7 @@ import apex.ingagers.ecommerce.model.Addresses;
 import apex.ingagers.ecommerce.model.OrderProduct;
 import apex.ingagers.ecommerce.model.Orders;
 import apex.ingagers.ecommerce.model.Products;
-import apex.ingagers.ecommerce.model.PurchaseDone;
 import apex.ingagers.ecommerce.model.Users;
-import apex.ingagers.ecommerce.model.PurchaseDone.OrderProduct_metadata;
 import apex.ingagers.ecommerce.repository.AddressesRepository;
 import apex.ingagers.ecommerce.repository.OrderProductRepository;
 import apex.ingagers.ecommerce.repository.OrdersRepository;
@@ -35,7 +36,8 @@ public class OrdersController {
     private final OrderProductRepository orderProductRepository;
 
     OrdersController(UserRepository userRepository, AddressesRepository addressesRepository,
-            OrdersRepository ordersRepository, ProductsRepository productsRepository,OrderProductRepository orderProductRepository) {
+            OrdersRepository ordersRepository, ProductsRepository productsRepository,
+            OrderProductRepository orderProductRepository) {
         this.userRepository = userRepository;
         this.addressesRepository = addressesRepository;
         this.ordersRepository = ordersRepository;
@@ -43,11 +45,12 @@ public class OrdersController {
         this.orderProductRepository = orderProductRepository;
     }
 
-    @PostMapping("/createOrder")
-    HttpStatus createOrder(@RequestBody PurchaseDone purchaseDone) {
-        // *Create a new order (Need)
+    @PostMapping("/Orders")
+    HttpStatus createOrder(@RequestBody Map<String, Object> values) {
 
-        int id_user = purchaseDone.getAddress().getUsers().getId();
+        Map<String, Object> ad = (Map<String, Object>) values.get("address");
+        Integer id_user = Integer.parseInt(String.valueOf(ad.get("id_User")));
+
         Orders order = new Orders();
 
         List<Users> optionalUser = userRepository.findUserById(id_user);
@@ -68,36 +71,45 @@ public class OrdersController {
             order.setShipping_address(Shippingaddress);
         }
 
-        int total_cost = purchaseDone.getAmount_total();
-        order.setTotal_cost(total_cost);
+        Float at = Float.parseFloat(String.valueOf(values.get("amount_total")));
+        order.setTotal_cost(at);
 
         long now = System.currentTimeMillis();
         Timestamp sqlTimestamp = new Timestamp(now);
 
         order.setCreated_at(sqlTimestamp);
         order.setUpdated_at(null);
-        //
+
         Orders savedOrder = ordersRepository.save(order);
 
-        // int numOfProducts = purchaseDone.getProducts().size();
+        Map<String, Object> items = (Map<String, Object>) values.get("items");
+        Integer productsQuantity = ((java.util.List) ((java.util.Map.Entry) items.entrySet().toArray()[1]).getValue())
+                .size();
 
-        OrderProduct orderProduct = new OrderProduct();
-
-        int id_product;
+        // int id_product; //TODO: Descomentar si se envia desde el front el ID del
+        // producto
         int p_quantity;
         float p_price;
         String p_name;
-        Products p;
- 
-    
-        for (OrderProduct_metadata product : purchaseDone.getItems()) {
-            // id_product= Integer.parseInt(product.id);
+
+        for (int i = 0; i < productsQuantity; i++) {
+            // id_product= Integer.parseInt(product.id); //TODO: Descomentar si se envia
+            // desde el front el ID del producto
             // TODO:el id de producto de stripe no
             // funciona para esto, por lo tanto se buscara el ID dependiendo de la
             // description, esto se debe cambiar
+            // *5 description, 7 quantity, 0 ID [stripe id no sirve]
+            OrderProduct orderProduct = new OrderProduct();
+            Products p = new Products();
 
-            p = productsRepository.findByDescription(product.description);
-            p_quantity = product.quantity;
+            String description = String
+                    .valueOf(((java.util.Map.Entry) ((java.util.Map) ((java.util.List) ((java.util.Map.Entry) items
+                            .entrySet().toArray()[1]).getValue()).get(i)).entrySet().toArray()[5]).getValue());
+            Integer quantity = (Integer) ((java.util.Map.Entry) ((java.util.Map) ((java.util.List) ((java.util.Map.Entry) items
+                    .entrySet().toArray()[1]).getValue()).get(i)).entrySet().toArray()[7]).getValue();
+
+            p = productsRepository.findByDescription(description);
+            p_quantity = quantity;
             p_price = p.getPrice();
             p_name = p.getName();
 
@@ -109,7 +121,28 @@ public class OrdersController {
 
             orderProductRepository.save(orderProduct);
         }
-
         return HttpStatus.OK;
+    }
+
+    @GetMapping("/Orders/{id_user}")
+    public List<Object> getOrdersByUserId(@PathVariable("id_user") Integer id_user) {
+        List<Orders> orders = ordersRepository.findOrdersByUserId(id_user);
+
+        List<Object> ordersFinal = new ArrayList<>();
+
+        for (Orders order : orders) {
+            ordersFinal.add(order);
+            Integer order_id = order.getId();
+            List<OrderProduct> productOrders = orderProductRepository.findOrderProductsByOrderId(order_id);
+
+            for (OrderProduct orderProduct : productOrders) {
+
+                ordersFinal.add("Quantity: " + orderProduct.getQuantity());
+                ordersFinal.add(orderProduct.getProducts());
+            }
+
+        }
+
+        return ordersFinal;
     }
 }
