@@ -155,7 +155,6 @@ public class OrdersController {
                 ordersFinal.add("Quantity: " + orderProduct.getQuantity());
                 ordersFinal.add(orderProduct.getProducts());
             }
-
         }
 
         return ordersFinal;
