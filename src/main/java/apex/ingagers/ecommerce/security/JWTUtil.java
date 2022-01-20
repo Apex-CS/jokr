@@ -72,6 +72,7 @@ public class JWTUtil {
                                  .setSubject(user.getEmail())
                                  .claim("name", user.getName())
                                  .claim("photoUrl", user.getphotoUrl())
+                                 .claim("photoUrlId", user.getphotoPublicId())
                                  .claim("authorities",
                                  grantedAuthorities.stream()
                                          .map(GrantedAuthority::getAuthority)

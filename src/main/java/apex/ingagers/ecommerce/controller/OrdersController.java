@@ -182,6 +182,7 @@ public class OrdersController {
         return ordersFinal;
     }
 
+    @PreAuthorize("hasAuthority ('Admin')")
     @PutMapping("/orders/{id}")
     public Orders update(@PathVariable("id") Integer id, @RequestBody Orders orders) {
 
