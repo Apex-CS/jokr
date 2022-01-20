@@ -22,6 +22,11 @@ public class Orders {
 
     // Foreign Key
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_status", nullable = false)
+    OrderStatuses orderStatus;
+
+    // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "billing_address", nullable = false)
     Addresses billing_address;
 
@@ -78,6 +83,14 @@ public class Orders {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public OrderStatuses getOrderStatus() {
+        return this.orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatuses orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Addresses getBilling_address() {
