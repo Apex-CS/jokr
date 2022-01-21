@@ -54,7 +54,7 @@ public class OrdersController {
         this.orderProductRepository = orderProductRepository;
         this.orderStatusesRepository = orderStatusesRepository;
     }
-    
+
     @PreAuthorize("hasAuthority ('Shopper')")
     @PostMapping("/orders")
     HttpStatus createOrder(@RequestBody Map<String, Object> values) {
@@ -63,7 +63,7 @@ public class OrdersController {
         Integer id_user = Integer.parseInt(String.valueOf(ad.get("id_User")));
 
         Orders order = new Orders();
-        
+
         List<Users> optionalUser = userRepository.findUserById(id_user);
         if (!optionalUser.isEmpty()) {
             Users user = optionalUser.get(0);
@@ -95,20 +95,22 @@ public class OrdersController {
         List<OrderStatuses> optionalOrderStatus = orderStatusesRepository.findStatusById(1);
         OrderStatuses orderStatus = optionalOrderStatus.get(0);
         order.setOrderStatus(orderStatus);
-        
+
         Orders savedOrder = ordersRepository.save(order);
 
         Map<String, Object> items = (Map<String, Object>) values.get("items");
         Integer productsQuantity = ((java.util.List) ((java.util.Map.Entry) items.entrySet().toArray()[1]).getValue())
                 .size();
 
-        // int id_product; //TODO: Descomentar si se envia desde el front el ID del producto
+        // int id_product; //TODO: Descomentar si se envia desde el front el ID del
+        // producto
         int p_quantity;
         float p_price;
         String p_name;
 
         for (int i = 0; i < productsQuantity; i++) {
-            // id_product= Integer.parseInt(product.id); //TODO: Descomentar si se envia desde el front el ID del producto
+            // id_product= Integer.parseInt(product.id); //TODO: Descomentar si se envia
+            // desde el front el ID del producto
             // TODO: el id de producto de stripe no
             // funciona para esto, por lo tanto se buscara el ID dependiendo de la
             // description, esto se debe cambiar
@@ -140,30 +142,58 @@ public class OrdersController {
 
     @GetMapping("/orders/{id_user}")
     public List<Object> getOrdersByUserId(@PathVariable("id_user") Integer id_user) {
-        List<Orders> orders = ordersRepository.findOrdersByUserId(id_user);
 
-        List<Object> ordersFinal = new ArrayList<>();
+        List<Users> optionalUser = userRepository.findUserById(id_user);
+        Users users = optionalUser.get(0);
 
-        for (Orders order : orders) {
-            ordersFinal.add(order);
-            Integer order_id = order.getId();
+        if (users.getRoleName() == "Admin") {
 
-            List<OrderProduct> productOrders = orderProductRepository.findOrderProductsByOrderId(order_id);
+            List<Orders> orders = ordersRepository.findAll();
 
-            for (OrderProduct orderProduct : productOrders) {
+            List<Object> ordersFinal = new ArrayList<>();
 
-                ordersFinal.add("Quantity: " + orderProduct.getQuantity());
-                ordersFinal.add(orderProduct.getProducts());
+            for (Orders order : orders) {
+                ordersFinal.add(order);
+                Integer order_id = order.getId();
+                List<OrderProduct> productOrders = orderProductRepository.findOrderProductsByOrderId(order_id);
+
+                for (OrderProduct orderProduct : productOrders) {
+
+                    ordersFinal.add("Quantity: " + orderProduct.getQuantity());
+                    ordersFinal.add(orderProduct.getProducts());
+                }
+
             }
+            return ordersFinal;
+
+        } else {
+
+            List<Orders> orders = ordersRepository.findOrdersByUserId(id_user);
+
+            List<Object> ordersFinal = new ArrayList<>();
+
+            for (Orders order : orders) {
+                ordersFinal.add(order);
+                Integer order_id = order.getId();
+
+                List<OrderProduct> productOrders = orderProductRepository.findOrderProductsByOrderId(order_id);
+
+                for (OrderProduct orderProduct : productOrders) {
+
+                    ordersFinal.add("Quantity: " + orderProduct.getQuantity());
+                    ordersFinal.add(orderProduct.getProducts());
+                }
+            }
+            return ordersFinal;
         }
 
-        return ordersFinal;
     }
+
     @PreAuthorize("hasAuthority ('Admin')")
     @GetMapping("/orders/")
     public List<Object> getAllOrders() {
         List<Orders> orders = ordersRepository.findAll();
-        
+
         List<Object> ordersFinal = new ArrayList<>();
 
         for (Orders order : orders) {
